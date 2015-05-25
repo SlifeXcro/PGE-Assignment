@@ -1,33 +1,39 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Background : MonoBehaviour 
+// *** BACKGROUND SCROLLING *** //
+// ***     AUTHOR: SLIFE    *** //
+
+// --- Translate Seamless BG from Prev Index to Last Index
+// --- Provides an "Endless Scrolling" Effect
+
+public class Background : MonoBehaviour
 {
     //Background Objects
     public SpriteRenderer[] BG = new SpriteRenderer[3];
     int CurIndex = 1;
-	
+
     //Init
     void Start()
     {
         //Init Next BG Pos
         Vector3 TempPos = BG[CurIndex].transform.position;
-        TempPos.x += BG[CurIndex].gameObject.collider.bounds.size.x;
+        TempPos.x += BG[CurIndex].gameObject.GetComponent<Collider>().bounds.size.x;
         BG[CurIndex + 1].transform.position = TempPos;
 
         //Init Prev BG Pos
         TempPos = BG[CurIndex].transform.position;
-        TempPos.x -= BG[CurIndex].gameObject.collider.bounds.size.x;
+        TempPos.x -= BG[CurIndex].gameObject.GetComponent<Collider>().bounds.size.x;
         BG[CurIndex - 1].transform.position = TempPos;
     }
 
-	//Update is called once per frame
-	void Update () 
+    //Update is called once per frame
+    void Update()
     {
         //Set Positions
         float Cam_Pos = Camera.main.transform.position.x + Camera.main.rect.size.x * 0.5f,
-              BG_Pos_Right = BG[CurIndex].transform.position.x + BG[CurIndex].gameObject.collider.bounds.size.x * 0.5f,
-              BG_Pos_Left = BG[CurIndex].transform.position.x - BG[CurIndex].gameObject.collider.bounds.size.x * 0.5f;
+              BG_Pos_Right = BG[CurIndex].transform.position.x + BG[CurIndex].gameObject.GetComponent<Collider>().bounds.size.x * 0.5f,
+              BG_Pos_Left = BG[CurIndex].transform.position.x - BG[CurIndex].gameObject.GetComponent<Collider>().bounds.size.x * 0.5f;
 
         //Set Indices
         int NextIndex, PrevIndex;
@@ -44,7 +50,7 @@ public class Background : MonoBehaviour
         if (Cam_Pos >= BG_Pos_Right)
         {
             Vector3 NewPos = BG[PrevIndex].transform.position;
-            NewPos.x += BG[PrevIndex].gameObject.collider.bounds.size.x + BG[CurIndex].gameObject.collider.bounds.size.x + BG[NextIndex].gameObject.collider.bounds.size.x;
+            NewPos.x += BG[PrevIndex].gameObject.GetComponent<Collider>().bounds.size.x + BG[CurIndex].gameObject.GetComponent<Collider>().bounds.size.x + BG[NextIndex].gameObject.GetComponent<Collider>().bounds.size.x;
             BG[PrevIndex].transform.position = NewPos;
             ++CurIndex;
             if (CurIndex > 2)
@@ -55,11 +61,11 @@ public class Background : MonoBehaviour
         if (Cam_Pos <= BG_Pos_Left)
         {
             Vector3 NewPos = BG[NextIndex].transform.position;
-            NewPos.x -= BG[PrevIndex].gameObject.collider.bounds.size.x + BG[CurIndex].gameObject.collider.bounds.size.x + BG[NextIndex].gameObject.collider.bounds.size.x;
+            NewPos.x -= BG[PrevIndex].gameObject.GetComponent<Collider>().bounds.size.x + BG[CurIndex].gameObject.GetComponent<Collider>().bounds.size.x + BG[NextIndex].gameObject.GetComponent<Collider>().bounds.size.x;
             BG[NextIndex].transform.position = NewPos;
             --CurIndex;
             if (CurIndex < 0)
                 CurIndex = 2;
         }
-	}
+    }
 }

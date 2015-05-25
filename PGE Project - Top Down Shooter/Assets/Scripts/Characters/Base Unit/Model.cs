@@ -4,7 +4,7 @@ using System.Collections;
 public class Model : MonoBehaviour 
 {
     //Every Model has it's own Walking Collision Region
-    public CollisionRegion WalkCollisionRegion;
+    public CollisionRegionFlags WalkCollisionRegion;
     public bool isAnimated = true;
 
     //Returns own Animator

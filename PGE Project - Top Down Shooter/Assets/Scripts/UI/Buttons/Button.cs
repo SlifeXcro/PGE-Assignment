@@ -32,7 +32,7 @@ public class Button : MonoBehaviour
     //Parent Update
     public void StaticUpdate()
     {
-        if (InputScript.Instance.InputCollided(this.gameObject.collider))
+        if (InputScript.Instance.InputCollided(this.gameObject.GetComponent<Collider>()))
         {
             if (Input.GetMouseButtonDown(0))
             {

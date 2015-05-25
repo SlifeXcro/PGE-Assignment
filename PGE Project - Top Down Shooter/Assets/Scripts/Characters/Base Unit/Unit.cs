@@ -8,13 +8,14 @@ public class Unit : MonoBehaviour
     public enum UType
     {
         UNIT_DEFAULT,
+		UNIT_E_SHOOTER,	//e = enemy
+		UNIT_E_BOMBER,	 
         UNIT_MAGE
     } public UType UnitType = UType.UNIT_DEFAULT;
 
     //Check if Unit has Collided with Unwalkable Objects
     void OnTriggerEnter(Collider col)
     {
-       
     }
     void OnTriggerExit(Collider col)
     {
@@ -67,7 +68,10 @@ public class Unit : MonoBehaviour
             RandomizeStats();
 
         //Init Game Object Tag
-        theModel.gameObject.tag = this.gameObject.tag = "UNIT";
+		if (this.gameObject.tag == "Untagged")
+			theModel.gameObject.tag = "UNIT";
+		else
+			theModel.gameObject.tag = this.gameObject.tag;
     }
 
 	//Use this for initialization

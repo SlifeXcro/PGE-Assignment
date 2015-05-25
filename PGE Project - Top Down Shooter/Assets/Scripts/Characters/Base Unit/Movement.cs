@@ -3,6 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
+// *** MOVEMENT SCIPTING *** //
+// ***   AUTHOR: SLIFE   *** //
+
+// --- Uses Raycast to debug line of Movement
+// --- Analog Movement Implemented
+
 public class Movement : MonoBehaviour
 {
     //Singleton Structure

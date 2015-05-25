@@ -2,19 +2,27 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Timer : MonoBehaviour 
+// *** STATIC TIMER CLASS *** //
+// ***   AUTHOR: SLIFE    *** //
+
+// --- Dynamically Calculates Passed Time
+// --- Dynamically Calculates Elapsed Time
+
+public class Timer : MonoBehaviour
 {
     //Returns True if reaches Time desired
     public static List<float> CurTime = new List<float>();
+    public static short GetExecuteID(float Seconds)
+    { CurTime.Add(Seconds); return (short)CurTime.Count; }
     public static bool ExecuteTime(float Seconds, short ID)
     {
-        if (CurTime.Count < ID)
-            CurTime.Add(Seconds);
+        if (ID > CurTime.Count)
+            return false;
 
-        CurTime[ID-1] -= Time.deltaTime;
-        if (CurTime[ID-1] <= 0)
+        CurTime[ID - 1] -= Time.deltaTime;
+        if (CurTime[ID - 1] <= 0)
         {
-            CurTime[ID-1] = Seconds;
+            CurTime[ID - 1] = Seconds;
             return true;
         }
         return false;
@@ -22,28 +30,17 @@ public class Timer : MonoBehaviour
 
     //Returns Elapsed Time with reset
     public static List<float> ElapsedTime = new List<float>();
+    public static short GetElapsedID(float Seconds)
+    { ElapsedTime.Add(Seconds); return (short)ElapsedTime.Count; }
     public static float GetElapsedTime(float Seconds, short ID)
     {
-        if (ElapsedTime.Count < ID)
-            ElapsedTime.Add(Seconds);
+        if (ID > ElapsedTime.Count)
+            return -1;
 
-        ElapsedTime[ID-1] -= Time.deltaTime;
-        if (ElapsedTime[ID-1] <= 0)
-            ElapsedTime[ID-1] = Seconds;
+        ElapsedTime[ID - 1] -= Time.deltaTime;
+        if (ElapsedTime[ID - 1] <= 0)
+            ElapsedTime[ID - 1] = Seconds;
 
-        return ElapsedTime[ID-1];
+        return ElapsedTime[ID - 1];
     }
-
-	//Use this for initialization
-	void Start () 
-    {
-        CurTime.Clear();
-        ElapsedTime.Clear();
-	}
-	
-	//Update is called once per frame
-	void Update () 
-    {
-        
-	}
 }
