@@ -1,12 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-// *** FIRING CLASSS *** //
-// *** AUTHOR: SLIFE *** //
-
-// --- Firing on touch
-// --- Couples with InputScript (Android Input)
-
 public class Firing : MonoBehaviour 
 {
     //Singleton Structure
@@ -29,15 +23,10 @@ public class Firing : MonoBehaviour
     public Transform Parent;
     public Vector3 BulletDir;
 
-    short TimerIndex;
-    float FireTime = 0.15f;
-
 	//Use this for initialization
 	void Start () 
     {
         mInstance = this;
-
-        TimerIndex = Timer.GetExecuteID(FireTime);
 	}
 	
 	//Update is called once per frame
@@ -61,7 +50,7 @@ public class Firing : MonoBehaviour
         }
 #endif
 
-        if (InputScript.TouchDown && Timer.ExecuteTime(FireTime, TimerIndex))
+        if (InputScript.TouchDown && Timer.ExecuteTime(0.15f, 1))
         {
             Bullet NewBullet = Instantiate(BulletPrefab, this.transform.position, Quaternion.identity) as Bullet;
             NewBullet.transform.parent = Parent;

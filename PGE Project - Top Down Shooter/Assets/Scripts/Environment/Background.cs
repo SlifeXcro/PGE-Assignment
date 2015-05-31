@@ -1,18 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-// *** BACKGROUND SCROLLING *** //
-// ***     AUTHOR: SLIFE    *** //
-
-// --- Translate Seamless BG from Prev Index to Last Index
-// --- Provides an "Endless Scrolling" Effect
-
-public class Background : MonoBehaviour
+public class Background : MonoBehaviour 
 {
     //Background Objects
     public SpriteRenderer[] BG = new SpriteRenderer[3];
     int CurIndex = 1;
-
+	
     //Init
     void Start()
     {
@@ -27,8 +21,8 @@ public class Background : MonoBehaviour
         BG[CurIndex - 1].transform.position = TempPos;
     }
 
-    //Update is called once per frame
-    void Update()
+	//Update is called once per frame
+	void Update () 
     {
         //Set Positions
         float Cam_Pos = Camera.main.transform.position.x + Camera.main.rect.size.x * 0.5f,
@@ -67,5 +61,5 @@ public class Background : MonoBehaviour
             if (CurIndex < 0)
                 CurIndex = 2;
         }
-    }
+	}
 }

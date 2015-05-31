@@ -4,18 +4,21 @@ using System.Collections;
 public class Enemy : Unit {
 
 	public short level = 1;					// may not be needed
+	public float maxHP = 20;
 	public float moveSpeed = 2.0f;			// speed when roaming
 	public float alertMoveSpeed = 5.0f;		// speed when chasing/in combat
-	public float maxHP = 50;
 	public float dmg = 1;			
 	public float armour = 0;				// (defense)
 	public string type = "Default"; 		// default = normal enemy (shooter)
 	public string name = "E_Shooter"; 	
 
-	public float IDLE_DELAY = 3.0f;			// delay for chging state from idle to roam
-	private float delay;
+	public float IDLE_DELAY = 3.0f;			// delay time for chging state from idle to roam
+
+	private float hp;
+	private float delay;					// idle delay
 
 	private GameObject Player;	
+	private HealthBar HPbar;	
 	
 	private enum FSM_M		// movement FSM
 	{
@@ -64,6 +67,10 @@ public class Enemy : Unit {
 		delay = IDLE_DELAY;
 
 		Player = GameObject.FindGameObjectWithTag("Player");
+		HPbar = this.GetComponent<HealthBar>();
+		HPbar.maxHP = maxHP;
+
+		hp = maxHP;
 	}
 	
 	//Update is called once per frame
@@ -71,6 +78,27 @@ public class Enemy : Unit {
 	{
 		//Update from Parent Class
 		this.StaticUpdate();
+
+		// if player's bullet hit me
+		if(theModel.other != null)
+		{
+			if(theModel.other.gameObject.tag == "bullet_player")		
+			{
+				hp -= 1;	//temp, chg to player's dmg (if we adding dmg in)
+				Destroy(theModel.other.gameObject);
+				theModel.other = null;
+			}
+		}
+
+		if(hp <= 0)
+		{
+			hp = 0;
+			Enemy_MState = FSM_M.mSTATE_DEAD;
+			Destroy(this.gameObject);
+			// add player's pts or sth
+		}
+		// update HP bar
+		HPbar.hp = hp;
 
 		EnemyMovementFSM();
 	}
@@ -87,7 +115,7 @@ public class Enemy : Unit {
 				if(this.theModel.WalkCollisionRegion.inRng_Chase)	// if Player in my sight		
 				{
 					delay = IDLE_DELAY;
-					Enemy_MState = FSM_M.mSTATE_CHASE;				// I chase
+					Enemy_MState = FSM_M.mSTATE_CHASE;			 
 				}
 				else 												// Player not in my sight
 				{
@@ -97,7 +125,7 @@ public class Enemy : Unit {
 					if(delay <= 0)									// if Im done slacking,
 					{
 						delay = IDLE_DELAY;
-						Enemy_MState = FSM_M.mSTATE_ROAM;			// I roam ard
+						Enemy_MState = FSM_M.mSTATE_ROAM;			 
 					}
 				}
 				break;
@@ -107,14 +135,14 @@ public class Enemy : Unit {
 // #ROAM STATE
 
 			case FSM_M.mSTATE_ROAM:										// I(Enemy) roam around waypts to find player
-				
+			Debug.Log(this.theModel.WalkCollisionRegion.inRng_Chase);
 				if(this.theModel.WalkCollisionRegion.inRng_Chase)		// if Player/objective in my sight		
 				{
-					Enemy_MState = FSM_M.mSTATE_CHASE;					// I chase
+					Enemy_MState = FSM_M.mSTATE_CHASE;					 
 				}
 				else 													// Player went out of my sight		
 				{
-					Debug.Log("mROAM");									// I roam
+					Debug.Log("mROAM");									 
 				}
 				break;
 
@@ -128,10 +156,10 @@ public class Enemy : Unit {
 				{
 					if(this.theModel.WalkCollisionRegion.inRng_Fire)	// if Player/objective in my rng	
 					{
-						Enemy_MState = FSM_M.mSTATE_COMBAT;				// I fight/do sth
+						Enemy_MState = FSM_M.mSTATE_COMBAT;				 
 					}
 					else 												// Player/objective not in my rng yet
-					{													// I ctn chase 
+					{													 
 						if(this.UnitType == UType.UNIT_E_BOMBER)		
 							Debug.Log("mOBJECTIVE FOUND, HEADING THR...");
 						else
@@ -145,7 +173,7 @@ public class Enemy : Unit {
 				}
 				else 													// Player went out of my sight		
 				{
-					Enemy_MState = FSM_M.mSTATE_IDLE;					// I slack, then roam
+					Enemy_MState = FSM_M.mSTATE_IDLE;					 
 				}
 				break;
 
@@ -153,7 +181,7 @@ public class Enemy : Unit {
 // ===================================================================================================================
 // #COMBAT STATE
 
-			case FSM_M.mSTATE_COMBAT:								// Enemy in combat with player
+			case FSM_M.mSTATE_COMBAT:								// in combat with player
 				// movement codes here
 				// ... 
 
@@ -164,7 +192,7 @@ public class Enemy : Unit {
 // ===================================================================================================================
 // #FLEE STATE
 
-			case FSM_M.mSTATE_FLEE:									// Enemy flee from player
+			case FSM_M.mSTATE_FLEE:									// flee from player
 				Debug.Log("mFLEE");				
 				break;
 
@@ -174,6 +202,7 @@ public class Enemy : Unit {
 
 			case FSM_M.mSTATE_DEAD:
 				Debug.Log("mDEAD");
+				Enemy_CState = FSM_C.cSTATE_NULL;	
 				break;
 
 // #DEAD STATE
@@ -195,7 +224,7 @@ public class Enemy : Unit {
 			case FSM_C.cSTATE_NULL:	
 
 				if(this.theModel.WalkCollisionRegion.inRng_Fire)	// if Player/objective enters my rng	
-				{													// I shoot/destroy
+				{													 
 					if(this.UnitType == UType.UNIT_E_BOMBER)
 						Enemy_CState = FSM_C.cSTATE_BOMB;
 					else
@@ -207,7 +236,7 @@ public class Enemy : Unit {
 // ===================================================================================================================
 // #SHOOT STATE
 
-			case FSM_C.cSTATE_SHOOT:			// when I(Enemy) is in range with player (shooter types only)
+			case FSM_C.cSTATE_SHOOT:			// when I(Enemy) is in fire range with player (shooter types only)
 
 				if(this.theModel.WalkCollisionRegion.inRng_Fire)	// if Player/objective still in my rng	
 				{
@@ -217,8 +246,8 @@ public class Enemy : Unit {
 				}
 				else 												// Player/objective went out of my rng	
 				{
-					Enemy_CState = FSM_C.cSTATE_NULL;				// I stop firing
-					Enemy_MState = FSM_M.mSTATE_CHASE;				// I chase
+					Enemy_CState = FSM_C.cSTATE_NULL;				 
+					Enemy_MState = FSM_M.mSTATE_CHASE;				 
 				}
 				break;
 
@@ -239,6 +268,4 @@ public class Enemy : Unit {
 				break;
 		}
 	}
-
-
 }

@@ -3,9 +3,10 @@ using System.Collections;
 
 public class Model : MonoBehaviour 
 {
+	public bool isAnimated = true;
     //Every Model has it's own Walking Collision Region
     public CollisionRegionFlags WalkCollisionRegion;
-    public bool isAnimated = true;
+	public Collision2D other;								// obj colliding with model
 
     //Returns own Animator
     public Animator GetAnimation()
@@ -33,5 +34,11 @@ public class Model : MonoBehaviour
 	void Update () 
     {
 	
+	}
+
+	void OnCollisionEnter2D(Collision2D col)
+	{
+		Debug.Log("MODEL COLLIDE");
+		other = col;				// rmb to set model's other to null after using this col info
 	}
 }

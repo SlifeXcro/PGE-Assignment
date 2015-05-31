@@ -1,13 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-// *** CAMERA PANNING CLASS *** //
-// ***    AUTHOR: SLIFE     *** //
-
-// --- Pans Camera with Desired Obj Reference
-// --- Ability to Freeze X and/or Y Scrolling
-// --- Thus suitable for Side Scrollers (Freeze Y Scroll)
-
 public class CameraPan : MonoBehaviour 
 {
     //Singleton Structure
@@ -141,9 +134,9 @@ public class CameraPan : MonoBehaviour
     {
         //Pan Camera
         if (!Global.FreeCam && theUnit != null)
-            PanCamera(theUnit.gameObject, ScrollSpeed * Time.deltaTime, 2);
+            PanCamera(theUnit.gameObject, ScrollSpeed * Time.deltaTime, 0);
         else
-            PanCamera(UserTouch.Instance.gameObject, ScrollSpeed * Time.deltaTime * 2.0f, 2);
+            PanCamera(UserTouch.Instance.gameObject, ScrollSpeed * Time.deltaTime * 2.0f, 0);
 
         //Stop Global Movement if Contacted with Buttons in UI
         //bool Collided = false;
