@@ -116,5 +116,16 @@ public class Unit : MonoBehaviour
 	void Update () 
     {
         StaticUpdate();
+		
+		// if enemy's bullet hit player units
+		if(this.tag == "Player" && theModel.other != null)
+		{
+			if(theModel.other.gameObject.tag == "bullet_enemy")		
+			{
+				//hp -= 1;	//temp, chg to enemy's dmg (if we adding dmg in)
+				Destroy(theModel.other.gameObject);
+				theModel.other = null;
+			}
+		}
 	}
 }

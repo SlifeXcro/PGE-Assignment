@@ -104,12 +104,18 @@ public class Movement : MonoBehaviour
             case KeyCode.LeftArrow:
             case KeyCode.A:
                 theUnit.theModel.SetAnimation(2);
-                theUnit.transform.Translate(-MovementSpeed * Time.deltaTime, 0, 0);
+                if (!(theUnit.theModel.WalkCollisionRegion.CollidedUnwalkable && CurrentKey == Key))
+                	theUnit.transform.Translate(-MovementSpeed * Time.deltaTime, 0, 0);
+                if (!theUnit.theModel.WalkCollisionRegion.CollidedUnwalkable)
+                    CurrentKey = Key;
                 break;
             case KeyCode.RightArrow:
             case KeyCode.D:
                 theUnit.theModel.SetAnimation(3);
-                theUnit.transform.Translate(MovementSpeed * Time.deltaTime, 0, 0);
+                if (!(theUnit.theModel.WalkCollisionRegion.CollidedUnwalkable && CurrentKey == Key))
+                	theUnit.transform.Translate(MovementSpeed * Time.deltaTime, 0, 0);
+                if (!theUnit.theModel.WalkCollisionRegion.CollidedUnwalkable)
+                    CurrentKey = Key;
                 break;
             case KeyCode.UpArrow:
             case KeyCode.W:

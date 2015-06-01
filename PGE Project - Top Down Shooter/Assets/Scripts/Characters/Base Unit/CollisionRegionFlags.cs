@@ -12,10 +12,15 @@ public class CollisionRegionFlags : MonoBehaviour
     //Flag to Check if Unit has made contact with Unwalkable Objects
 	public bool CollidedUnwalkable = false;
 
-	public List<ColliderScript> CollidersList = new List<ColliderScript>();
+	List<ColliderScript> CollidersList = new List<ColliderScript>();
 
 	void Start()
 	{
+		foreach(Transform child in this.transform)	// iterator for child in this transform
+		{
+			CollidersList.Add(child.gameObject.GetComponent<ColliderScript>());
+			Debug.Log(child.tag);
+		}
 	}
 
 	void Update()

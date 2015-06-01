@@ -3,7 +3,7 @@ using System.Collections;
 
 public class HealthBar : MonoBehaviour {
 
-	public float maxHP = 100f;		//in percentage
+	public float maxHP = 100f;		//default
 	public float hp;
 	public GameObject HPbar;
 
