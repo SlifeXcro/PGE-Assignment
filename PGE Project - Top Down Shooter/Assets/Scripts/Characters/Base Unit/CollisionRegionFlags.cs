@@ -12,6 +12,8 @@ public class CollisionRegionFlags : MonoBehaviour
     //Flag to Check if Unit has made contact with Unwalkable Objects
 	public bool CollidedUnwalkable = false;
 
+	public bool HitboxTrigger = false;
+
 	List<ColliderScript> CollidersList = new List<ColliderScript>();
 
 	void Start()
@@ -19,7 +21,7 @@ public class CollisionRegionFlags : MonoBehaviour
 		foreach(Transform child in this.transform)	// iterator for child in this transform
 		{
 			CollidersList.Add(child.gameObject.GetComponent<ColliderScript>());
-			Debug.Log(child.tag);
+			//Debug.Log(child.tag);
 		}
 	}
 
@@ -39,6 +41,20 @@ public class CollisionRegionFlags : MonoBehaviour
 			{
 				inRng_Fire = col.inRegion;
 			}
+			else if(col.gameObject.tag == "HITBOX")
+			{
+				HitboxTrigger = col.inRegion;
+			}
+		}
+	}
+
+	public void setHitboxTriggerFalse()
+	{
+		HitboxTrigger = false;
+		foreach(ColliderScript col in CollidersList)
+		{
+			if(col.gameObject.tag == "HITBOX")
+				col.inRegion = HitboxTrigger;
 		}
 	}
 }

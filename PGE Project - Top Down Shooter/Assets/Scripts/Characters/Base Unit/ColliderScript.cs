@@ -21,7 +21,7 @@ public class ColliderScript : MonoBehaviour
 				{
 					if(col.gameObject.tag == "bullet_enemy")		//and enemy's bullet enters
 					{
-						//inRegion = true;
+						inRegion = true;
 						Destroy(col.gameObject);
 					}
 				}
@@ -29,7 +29,7 @@ public class ColliderScript : MonoBehaviour
 				{
 					if(col.gameObject.tag == "bullet_player")		//and enemy's bullet enters
 					{
-						//inRegion = true;
+						inRegion = true;
 						Destroy(col.gameObject);
 					}
 				}
