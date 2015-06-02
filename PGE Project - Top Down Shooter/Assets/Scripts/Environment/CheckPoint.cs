@@ -24,6 +24,7 @@ public class CheckPoint : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+
          PlayerPrefs.SetFloat("playerx", PlayerObject.transform.position.x);
          PlayerPrefs.SetFloat("playery", PlayerObject.transform.position.y);
        

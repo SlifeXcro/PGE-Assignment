@@ -6,11 +6,22 @@ public class Bullet : MonoBehaviour
     public float Damage = 10.0f;
     public Vector3 Dir = Vector3.zero,
                    Vel = new Vector3(10, 10, 0);
+	public ParticleEmitter BulletExplosion;
 
 	//Use this for initialization
 	void Start () 
     {
 	
+	}
+
+	public void OnTriggerEnter2D(Collider2D col){
+		Vector2 bullet_pos = col.transform.position;
+		if (col.tag == "UNWALKABLE") {
+			Destroy (gameObject);
+			ParticleEmitter explosion = (ParticleEmitter)Instantiate
+				(BulletExplosion, bullet_pos, Quaternion.identity);
+			explosion.Emit();
+		}
 	}
 	
 	//Update is called once per frame
