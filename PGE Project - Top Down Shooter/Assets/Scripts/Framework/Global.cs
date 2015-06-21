@@ -10,6 +10,7 @@ public class Global : MonoBehaviour
     public static Item.ItemType CurrentItemType = Item.ItemType.ITEM_DEFAULT; //Only 1 instance of Item's type
     public static int CurrentItemID = -1; //Only 1 instance of Item's ID
     public static bool FreeCam = false; //Detect if Camera is "Free"
+    public static int EnemyKillCount = 0;
 
     //Start Function
     void Start()

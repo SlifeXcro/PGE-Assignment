@@ -4,13 +4,13 @@ using System.Collections;
 public class Mage : Unit 
 {
     // *** Inherited Virtual Functions *** //
-    public void RandomizeStats()
+    public override void RandomizeStats()
     {
         Debug.Log("Mage Stats Inited.");
         Stats.Set(1, Random.Range(500, 700),
-                  Random.Range(190, 270), Random.Range(150, 220),
-                  Random.Range(190, 270), Random.Range(150, 220),
-                  Random.Range(1.1f, 1.75f), "Mage", "Tsunayoshi");
+                     Random.Range(190, 270), Random.Range(150, 220),
+                     Random.Range(190, 270), Random.Range(150, 220),
+                     Random.Range(1.1f, 1.75f), "Mage", "Tsunayoshi");
     }
 
     //Use this for initialization

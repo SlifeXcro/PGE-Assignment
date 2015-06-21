@@ -1,12 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Model : MonoBehaviour 
+public class Model : MonoBehaviour
 {
-	public bool isAnimated = true;
-    //Every Model has it's own Walking Collision Region
-    public CollisionRegionFlags WalkCollisionRegion;
-	public Collision2D other;								// obj colliding with model
+    //Every Model has it's own Collision Regions
+    public ColliderManager CollisionRegions;
+    public bool isAnimated = true;
+    public short CurAnimationIndex = 0;
+
+    //Model Facing Dir
+    public enum E_Dir
+    {
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT
+    }; public E_Dir E_Direction;
 
     //Returns own Animator
     public Animator GetAnimation()
@@ -20,25 +29,23 @@ public class Model : MonoBehaviour
     public void SetAnimation(short AnimationIndex)
     {
         if (isAnimated)
+        {
             this.GetComponent<Animator>().SetInteger("Direction", AnimationIndex);
+            CurAnimationIndex = AnimationIndex;
+            E_Direction = (E_Dir)AnimationIndex;
+        }
     }
 
-	//Use this for initialization
-	void Start () 
+    //Use this for initialization
+    void Start()
     {
         //Default to first Animation
         SetAnimation(0);
-	}
-	
-	//Update is called once per frame
-	void Update () 
-    {
-	
-	}
+    }
 
-	void OnCollisionEnter2D(Collision2D col)
-	{
-		Debug.Log("MODEL COLLIDE");
-		other = col;				// rmb to set model's other to null after using this col info
-	}
+    //Update is called once per frame
+    void Update()
+    {
+
+    }
 }

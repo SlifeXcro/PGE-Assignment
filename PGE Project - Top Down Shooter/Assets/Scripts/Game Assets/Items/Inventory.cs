@@ -2,6 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 
+// *** FRAMEWORK: INVENTORY CLASS *** //
+// ***       AUTHOR: SLIFE        *** //
+
+// --- Skeletal Inventory
+// --- Adding of item Dynamically
+// --- Deleting Item Dynamically, with "Push Back"(s)
+
 public class Inventory : MonoBehaviour
 {
     public const short MAX_ITEMS = 20;                  // Maximum amt of Items (Item Expansion Pack?)
@@ -28,7 +35,7 @@ public class Inventory : MonoBehaviour
     public bool AddItem(Item.ItemType IType)
     {
         //Makes sure storage does not exceed max amount
-        if (ItemsList.Count < MAX_ITEMS)                            
+        if (ItemsList.Count < MAX_ITEMS)
         {
             //Generates a new unique ID
             //This value will be constantly increasing
@@ -37,11 +44,11 @@ public class Inventory : MonoBehaviour
 
             //Instantiates the Item on Inventory slot (Slot pos etc to be determined by Slot[] prefab)
             Item TempItem = Instantiate(InstantiatedItem, Slot[ItemsList.Count].gameObject.transform.position, Quaternion.identity) as Item;
-            TempItem.IType = IType;                                                             
-            TempItem.ID = UniqueID;                                                             
+            TempItem.IType = IType;
+            TempItem.ID = UniqueID;
             TempItem.Slot = ItemsList.Count + 1; //Slot starts from 1, not 0
             TempItem.GetComponent<SpriteRenderer>().sprite = DetermineSprite(TempItem.IType);
-            ItemsList.Add(TempItem);      
+            ItemsList.Add(TempItem);
 
             Debug.Log("Item Added! Item Type: " + (int)IType);
             Debug.Log("Total Item Count: " + ItemsList.Count);
@@ -61,7 +68,7 @@ public class Inventory : MonoBehaviour
         if (ItemSlot - 1 < ItemsList.Count)
         {
             Debug.Log("Item Deleted! Item Type: " + (int)ItemsList[ItemSlot - 1].IType);
-            Destroy(ItemsList[ItemSlot - 1].gameObject); 
+            Destroy(ItemsList[ItemSlot - 1].gameObject);
             ItemsList.Remove(ItemsList[ItemSlot - 1]); //Removes item from desired Slot
             Debug.Log("Total Item Count: " + ItemsList.Count);
             Push = true; //Item successfully deleted, proceed to Push 
@@ -77,7 +84,7 @@ public class Inventory : MonoBehaviour
                     --ItemsList[i].Slot;
 
                     //Re-Position Slot
-                    ItemsList[i].transform.position = Slot[ItemsList[i].Slot - 1].gameObject.transform.position; 
+                    ItemsList[i].transform.position = Slot[ItemsList[i].Slot - 1].gameObject.transform.position;
                 }
             }
             Push = false; //Only push items ONCE
@@ -100,7 +107,7 @@ public class Inventory : MonoBehaviour
 
                 //Store once, delete, then store again
                 //Breaking prevents overwriting of previous value.
-                break; 
+                break;
             }
         }
 

@@ -1,18 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TileScript : MonoBehaviour 
+// *** TILE SCROLLING CLASS *** //
+// ***     AUTHOR: SLIFE    *** //
+
+// --- Shifts Tile dynamically with Camera Pos
+// --- Provides an "Endless Map" Effect
+
+public class TileScript : MonoBehaviour
 {
-	//Use this for initialization
-	void Start () 
+    //Use this for initialization
+    void Start()
     {
-	
-	}
-	
-	//Update is called once per frame
-	void Update () 
+
+    }
+
+    //Update is called once per frame
+    void Update()
     {
-	    //Set Cam Pos
+        //Set Cam Pos
         float Cam_Pos_X = Camera.main.transform.position.x + 25;
         float Cam_Pos_Y = Camera.main.transform.position.y + 14;
 
@@ -47,5 +53,5 @@ public class TileScript : MonoBehaviour
             NewYPos -= MapGenerator.GROUND_VER * this.GetComponent<Collider>().bounds.size.y;
             this.transform.position = new Vector3(this.transform.position.x, NewYPos, this.transform.position.z);
         }
-	}
+    }
 }

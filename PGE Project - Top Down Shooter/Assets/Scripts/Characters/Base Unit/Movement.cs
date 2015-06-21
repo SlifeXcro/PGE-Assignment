@@ -3,6 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
+// *** MOVEMENT SCIPTING *** //
+// ***   AUTHOR: SLIFE   *** //
+
+// --- Uses Raycast to debug line of Movement
+// --- Analog Movement Implemented
+
 public class Movement : MonoBehaviour
 {
     //Singleton Structure
@@ -23,13 +29,14 @@ public class Movement : MonoBehaviour
 
     List<KeyCode> ListOfMovementKeys = new List<KeyCode>();
 
-    bool isMoving = false;                                          // Check if Unit is Moving
-    bool facingLeft = false, flipped = false;                       // Check for the player sprite direction
-    public float MovementSpeed = 5.0f;                              // Toggle this value in Editor to increase or decrease movement speed
-    public Unit theUnit;                                            // Unit Class
-    public Map theMap;                                              // Current Map (for Collision detection)
-    KeyCode CurrentKey = KeyCode.V;                                 // Current Key
-    Vector3 PlayerLastPos;                                          // Player's Last Position
+    // *** Variables *** //
+    bool isMoving = false, isWASD = false;
+    bool facingLeft = false, flipped = false;
+    public float MovementSpeed = 2.0f; 
+    public Unit theUnit;
+    public Map theMap;
+    KeyCode CurrentKey = KeyCode.V;  
+    Vector3 PlayerLastPos;
 
     void OnTriggerEnter(Collider col)
     {
@@ -51,35 +58,28 @@ public class Movement : MonoBehaviour
         ListOfMovementKeys.Add(KeyCode.RightArrow);
         ListOfMovementKeys.Add(KeyCode.UpArrow);
         ListOfMovementKeys.Add(KeyCode.DownArrow);
-        ListOfMovementKeys.Add(KeyCode.A);
-        ListOfMovementKeys.Add(KeyCode.D);
         ListOfMovementKeys.Add(KeyCode.W);
+        ListOfMovementKeys.Add(KeyCode.A);
         ListOfMovementKeys.Add(KeyCode.S);
+        ListOfMovementKeys.Add(KeyCode.D);
 
         //Set Last Pos
         PlayerLastPos = theUnit.transform.position;
 
 #if UNITY_EDITOR || UNITY_STANDALONE
 #elif UNITY_ANDROID
-        MovementSpeed *= 0.4f;
+        MovementSpeed *= 0.8f;
 #endif
     }
 
-    public static bool RayCastMovement(Vector3 Pos)
+    public static bool RayCastMovement(Vector3 Pos, Vector3 Dir, float Dist)
     {
         // *** RAYCASTING OF MOVEMENT *** //
         //Check if Path is Clear
         bool ClearPath = true;
 
-        //Set Distance
-        float Dist = 0.0f;
-        if (Analog.Instance.GetTravelDir().y > 0)
-            Dist = 3.0f;
-        else
-            Dist = 7.0f;
-
         //Raycast Line of Movement
-        RaycastHit[] Hit = Physics.RaycastAll(Pos, Analog.Instance.GetTravelDir(), Dist);
+        RaycastHit[] Hit = Physics.RaycastAll(Pos, Dir, Dist);
 
         //Check if Raycast line has hit unwalkable objects
         if (Hit != null)
@@ -92,6 +92,12 @@ public class Movement : MonoBehaviour
             }
         }
 
+        //Debug Line
+        if (ClearPath)
+            Debug.DrawRay(Pos, Dir, Color.green);
+        else
+            Debug.DrawRay(Pos, Dir, Color.red);
+
         return !ClearPath;
         // *** END OF RAYCASTING *** //
     }
@@ -99,38 +105,33 @@ public class Movement : MonoBehaviour
     //Movement 
     void Move(KeyCode Key)
     {
+        isWASD = true;
         switch (Key)
         {
             case KeyCode.LeftArrow:
             case KeyCode.A:
                 theUnit.theModel.SetAnimation(2);
-                if (!(theUnit.theModel.WalkCollisionRegion.CollidedUnwalkable && CurrentKey == Key))
-                	theUnit.transform.Translate(-MovementSpeed * Time.deltaTime, 0, 0);
-                if (!theUnit.theModel.WalkCollisionRegion.CollidedUnwalkable)
-                    CurrentKey = Key;
+                theUnit.transform.Translate(-MovementSpeed * Time.deltaTime, 0, 0);
                 break;
             case KeyCode.RightArrow:
             case KeyCode.D:
                 theUnit.theModel.SetAnimation(3);
-                if (!(theUnit.theModel.WalkCollisionRegion.CollidedUnwalkable && CurrentKey == Key))
-                	theUnit.transform.Translate(MovementSpeed * Time.deltaTime, 0, 0);
-                if (!theUnit.theModel.WalkCollisionRegion.CollidedUnwalkable)
-                    CurrentKey = Key;
+                theUnit.transform.Translate(MovementSpeed * Time.deltaTime, 0, 0);
                 break;
             case KeyCode.UpArrow:
             case KeyCode.W:
                 theUnit.theModel.SetAnimation(0);
-                if (!(theUnit.theModel.WalkCollisionRegion.CollidedUnwalkable && CurrentKey == Key))
+                if (!(theUnit.theModel.CollisionRegions.CollidedUnwalkable && CurrentKey == Key))
                     theUnit.transform.Translate(0, MovementSpeed * Time.deltaTime, 0);
-                if (!theUnit.theModel.WalkCollisionRegion.CollidedUnwalkable)
+                if (!theUnit.theModel.CollisionRegions.CollidedUnwalkable)
                     CurrentKey = Key;
                 break;
             case KeyCode.DownArrow:
             case KeyCode.S:
                 theUnit.theModel.SetAnimation(1);
-                if (!(theUnit.theModel.WalkCollisionRegion.CollidedUnwalkable && CurrentKey == Key))
+                if (!(theUnit.theModel.CollisionRegions.CollidedUnwalkable && CurrentKey == Key))
                     theUnit.transform.Translate(0, -MovementSpeed * Time.deltaTime, 0);
-                if (!theUnit.theModel.WalkCollisionRegion.CollidedUnwalkable)
+                if (!theUnit.theModel.CollisionRegions.CollidedUnwalkable)
                     CurrentKey = Key;
                 break;
             default:
@@ -159,21 +160,23 @@ public class Movement : MonoBehaviour
                 Move(ListOfMovementKeys[i]);
             }
             else if (Input.GetKeyUp(ListOfMovementKeys[i]))
-                flipped = false;
+                flipped = isWASD = false;
         }
         isMoving = !AllKeysClear;
 #endif
 
         if (Analog.Instance.Move)
         {
-            bool ClearPath = !RayCastMovement(theUnit.theModel.WalkCollisionRegion.transform.position);
+            //RayCast
+            Vector3 theDir = new Vector3(Analog.Instance.GetTravelDir().x, Analog.Instance.GetTravelDir().y, 0);
+            bool ClearPath = !RayCastMovement(theUnit.theModel.CollisionRegions.transform.position, theDir, 1.0f);
 
             isMoving = true;
             theUnit.theModel.SetAnimation(1);
 
             //Only Move when path is clear
             if (ClearPath)
-                theUnit.transform.Translate(Analog.Instance.GetTravelDir() * MovementSpeed * Time.deltaTime * 8.0f);
+                theUnit.transform.Translate(Analog.Instance.GetTravelDir() * MovementSpeed * Time.deltaTime * 1.5f);
         }
         else if (AllKeysClear)
         {
@@ -182,21 +185,30 @@ public class Movement : MonoBehaviour
         }
 
         //Set Facing Direction
+        bool FireButtonPriority = false;
+#if UNITY_EDITOR || UNITY_STANDALONE
+#elif UNITY_ANDROID
+        if (Firing.FIRE_BUTTON)
+            FireButtonPriority = true;
+#endif
         Vector3 facingDir = Vector3.zero;
-        if (InputScript.TouchDown)
-            facingDir = Firing.Instance.BulletDir;
-        else if (Analog.Instance.Move)
+        if ((Analog.Instance.Move && !Firing.isFiring) || FireButtonPriority)
             facingDir = Analog.Instance.GetTravelDir();
+        else if (!Firing.FIRE_BUTTON)
+            facingDir = Firing.Instance.BulletDir;
 
         //Toggle Animation
-        if (facingDir.x < 0 && facingDir.y > facingDir.x)
-            theUnit.theModel.SetAnimation(2);
-        else if (facingDir.x > 0 && facingDir.y < facingDir.x)
-            theUnit.theModel.SetAnimation(3);
-        else if (facingDir.y < 0)
-            theUnit.theModel.SetAnimation(1);
-        else if (facingDir.y > 0)
-            theUnit.theModel.SetAnimation(0);
+        if (!(isWASD && !Firing.isFiring))
+        {
+            if (facingDir.x < 0 && facingDir.y > facingDir.x)
+                theUnit.theModel.SetAnimation(2);
+            else if (facingDir.x > 0 && facingDir.y < facingDir.x)
+                theUnit.theModel.SetAnimation(3);
+            else if (facingDir.y < 0)
+                theUnit.theModel.SetAnimation(1);
+            else if (facingDir.y > 0)
+                theUnit.theModel.SetAnimation(0);
+        }
 
         //Set Player Sprite & Animation to IDLE if Game is Paused
         //if (!Global.GamePause || Global.StopMovement)

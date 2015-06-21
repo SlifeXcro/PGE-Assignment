@@ -1,2 +1,27 @@
 === CHANGE LOG ===
-stats != null (Unit.cs)
+TouchPhase.Ended InputCollided
+Analog.cs
+Movement.cs - Variables
+	      - Dir Min Removed
+
+=== TO DO ===
+Analog - Move, Fire, Release Move, Move Bug
+BulletDir Speed (Min Value)
+Bullet Speed (Increases to Same Dir)
+Diagonal Bullet for Editor WASD (Forward Vector?)
+Shaky Movement
+Tick Fires (Bug)
+Color Correction for Analog BG
+Collider to Collider2D?
+
+=== FROM BRANCH === 
+HPBar to HpBar
+Collision Script
+Unit.cs change tag only when tag = null (mage as well)
+
+=== ADVANCEMENT ===
+Obstacle Generator (Map) 
+AI FSM
+2 Diff Bullet Types (Player & Enemy)
+
+=== DONE ===

@@ -89,12 +89,13 @@ public class UserTouch : MonoBehaviour
                     }
                 }
             }
-            else 
+            else
             {
                 TouchPos = Camera.main.ScreenToWorldPoint(new Vector3(Input.touches[i].position.x, Input.touches[i].position.y, 0));
-                CurFingerIndex = i;
+                CurFingerIndex = 0;
             }
         }
+
         if (!isTouching || Analog.Instance.Move)
             this.transform.position = new Vector3(TouchPos.x, TouchPos.y, -11);
         else

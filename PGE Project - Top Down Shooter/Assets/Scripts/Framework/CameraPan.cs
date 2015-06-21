@@ -1,6 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// *** CAMERA PANNING CLASS *** //
+// ***    AUTHOR: SLIFE     *** //
+
+// --- Pans Camera with Desired Obj Reference
+// --- Ability to Freeze X and/or Y Scrolling
+// --- Thus suitable for Side Scrollers (Freeze Y Scroll)
+
 public class CameraPan : MonoBehaviour 
 {
     //Singleton Structure
@@ -21,7 +28,7 @@ public class CameraPan : MonoBehaviour
 
     //Current Unit
     public Unit theUnit;
-    public float ScrollSpeed = 3.7f;
+    public float ScrollSpeed = 5.0f;
 
     //Background
     public GameObject Background;
