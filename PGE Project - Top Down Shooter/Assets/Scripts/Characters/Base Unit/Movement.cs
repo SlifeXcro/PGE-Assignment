@@ -121,17 +121,17 @@ public class Movement : MonoBehaviour
             case KeyCode.UpArrow:
             case KeyCode.W:
                 theUnit.theModel.SetAnimation(0);
-                if (!(theUnit.theModel.CollisionRegions.CollidedUnwalkable && CurrentKey == Key))
+                if (!(theUnit.theModel.WalkCollisionRegion.CollidedUnwalkable && CurrentKey == Key))
                     theUnit.transform.Translate(0, MovementSpeed * Time.deltaTime, 0);
-                if (!theUnit.theModel.CollisionRegions.CollidedUnwalkable)
+                if (!theUnit.theModel.WalkCollisionRegion.CollidedUnwalkable)
                     CurrentKey = Key;
                 break;
             case KeyCode.DownArrow:
             case KeyCode.S:
                 theUnit.theModel.SetAnimation(1);
-                if (!(theUnit.theModel.CollisionRegions.CollidedUnwalkable && CurrentKey == Key))
+                if (!(theUnit.theModel.WalkCollisionRegion.CollidedUnwalkable && CurrentKey == Key))
                     theUnit.transform.Translate(0, -MovementSpeed * Time.deltaTime, 0);
-                if (!theUnit.theModel.CollisionRegions.CollidedUnwalkable)
+                if (!theUnit.theModel.WalkCollisionRegion.CollidedUnwalkable)
                     CurrentKey = Key;
                 break;
             default:
@@ -169,7 +169,7 @@ public class Movement : MonoBehaviour
         {
             //RayCast
             Vector3 theDir = new Vector3(Analog.Instance.GetTravelDir().x, Analog.Instance.GetTravelDir().y, 0);
-            bool ClearPath = !RayCastMovement(theUnit.theModel.CollisionRegions.transform.position, theDir, 1.0f);
+            bool ClearPath = !RayCastMovement(theUnit.theModel.WalkCollisionRegion.transform.position, theDir, 1.0f);
 
             isMoving = true;
             theUnit.theModel.SetAnimation(1);

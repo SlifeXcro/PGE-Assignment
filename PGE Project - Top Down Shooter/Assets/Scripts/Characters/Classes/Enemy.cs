@@ -1,63 +1,61 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Enemy : Unit {
 
-	public short level = 1;					// may not be needed
-	public float maxHP = 20;
-	public float moveSpeed = 2.0f;			// speed when roaming
-	public float alertMoveSpeed = 5.0f;		// speed when chasing/in combat
-	public float dmg = 1;			
-	public float armour = 0;				// (defense)
-	public string type = "Default"; 		// default = normal enemy (shooter)
-	public string name = "E_Shooter"; 	
+	// Stats
+	public short level 			= 1;				// may not be needed
+	public float maxHP 			= 20;
+	public float moveSpeed 		= 2.0f;				// speed when roaming
+	public float alertMoveSpeed = 5.0f;				// speed when chasing/in combat
+	public float dmg 			= 1;			
+	public float armour 		= 0;				// (defense)
+	public string type 			= "Default"; 		// default = normal enemy (shooter)
+	public string name 			= "E_Shooter"; 	
 
-	public const float IDLE_DELAY = 1.2f;	// delay time for chging state from idle to roam
+	public float IDLE_DELAY 	= 3.0f;				// delay time for chging state from idle to roam
+	public float FIRE_RATE		= 0.2f;			
 
-	private float hp;
-	private float delay;					// idle delay
+	public float tolLength		= 2.0f;				// length to determine whether AI has reach waypt
+	public float strafeLength	= 5.0f;				// strafe length max dist when in combat
 
-	private GameObject Player;	
-	private HealthBar HPbar;	
+	// Waypoints
+	public List<Transform> waypointList = new List<Transform>();
+
+	int nextWaypt;							// stores next waypoint location
+	float hp;
+	float delay;							// idle delay
 	
-    //Way Points (Simple)
-    public Transform[] WayPoints;
-    short CurIndex = 0;
-    float E_MovementSpeed = 5.0f;
+	float[] random_values = new float[4];	// to store random values (chance) of strafe movement in combat
+	Vector2 strafeTargetPos;				// strafing move pos when in combat
+	Firing firingScript;
 
-	public enum FSM_M		// movement FSM
-	{
-		mSTATE_IDLE,
-		mSTATE_ROAM,		// enemy roam around waypts to find player
-		mSTATE_CHASE,		// enemy targets and chases player or generator 
-		mSTATE_COMBAT,		// enemy in combat with player
-		mSTATE_FLEE,		// enemy flee from player
-		mSTATE_DEAD
-	} public FSM_M Enemy_MState = FSM_M.mSTATE_IDLE;
-	
-	private enum FSM_C		// combat FSM
-	{
-		cSTATE_NULL,		// used when enemy mState is not in combat state
-		cSTATE_SHOOT,		// when enemy in range with player
-		cSTATE_BOMB
-	} private FSM_C Enemy_CState = FSM_C.cSTATE_NULL;
+	GameObject Player;	
 
-	public void RandomizeStats()
-	{
-		Debug.Log("Enemy Shooter Stats Inited.");
-		Stats.Set(level, maxHP, dmg, armour, 0, 0, 0, type, "E_Shooter");
-	}
+	// UI
+	HealthBar HPbar;	
 
-    void OnTriggerStay(Collider Col)
-    {
-        if (Col.tag == "BULLET")
-        {
-            hp -= 1;	//temp, chg to player's dmg (if we adding dmg in)
-            Destroy(Col.gameObject);
-        }
-    }
-	
-	//Use this for initialization
+	// movement FSM
+	private enum FSM_M		
+	{
+		IDLE,
+		ROAM,		 
+		CHASE,		 
+		COMBAT,		 
+		FLEE,		 
+		DEAD
+	} private FSM_M mState = FSM_M.IDLE;
+
+	// combat FSM
+	private enum FSM_C		
+	{
+		NULL,		// used when enemy is not in combat state (i.e. not in fire rng)
+		SHOOT,		 
+		BOMB
+	} private FSM_C cState = FSM_C.NULL;
+
+
 	void Start()
 	{
 		//Class has been inherited
@@ -65,236 +63,250 @@ public class Enemy : Unit {
 		
 		//Init from Parent Class
 		this.Init();
-		
-		//Init Unit's Type
-		switch(type)
-		{
-			case "Bomber":
-				this.UnitType = UType.UNIT_E_BOMBER;
-				break;
-
-			default:
-				this.UnitType = UType.UNIT_E_SHOOTER;
-				break;
-		}
+	
+		Player = GameObject.FindGameObjectWithTag("Player");
 
 		delay = IDLE_DELAY;
-
-		Player = GameObject.FindGameObjectWithTag("PLAYER");
+		
+		hp = maxHP;
 		HPbar = this.GetComponent<HealthBar>();
 		HPbar.maxHP = maxHP;
 
-		hp = maxHP;
+		firingScript = this.GetComponentInChildren<Firing>();
+
+		
+		// Spawn pos (temp)
+		nextWaypt = 0;
+		transform.position = waypointList[nextWaypt].position;		
+		
+		//Stats.Set(level, maxHP, dmg, armour, 0, 0, 0, type, "E_Shooter");
+		
+//		//Init Unit's Type
+//		switch(type)
+//		{
+//			case "Bomber":
+//				this.UnitType = UType.UNIT_E_BOMBER;
+//				mState = FSM_M.CHASE;
+//				break;
+//				
+//			default:
+//				this.UnitType = UType.UNIT_E_SHOOTER;
+//				break;
+//		}	
 	}
-	
-	//Update is called once per frame
+
+
 	void Update()
 	{
-        if (Player == null)
-            Player = GameObject.FindGameObjectWithTag("PLAYER");
-
 		//Update from Parent Class
 		this.StaticUpdate();
+		
+		// sprite's collision
+		if(theModel.WalkCollisionRegion.HitboxTrigger)
+		{
+			// (bullet's owner check done in collision script)
+			//if(theModel.other.gameObject.tag == "bullet_player")		
+			//{
+			hp -= 1;	//temp, chg to player's dmg (if we adding dmg in)
+			theModel.WalkCollisionRegion.setHitboxTriggerFalse();
+			//(bullet destroyed in coll script too)
+			//Destroy(theModel.other.gameObject);
+			//theModel.other = null;
+			//}
+		}
 
 		if(hp <= 0)
 		{
 			hp = 0;
-			Enemy_MState = FSM_M.mSTATE_DEAD;
-            ++Global.EnemyKillCount;
+			mState = FSM_M.DEAD;
+			//++Global.EnemyKillCount;
 			Destroy(this.gameObject);
-			// add player's pts or sth
 		}
+
 		// update HP bar
 		HPbar.hp = hp;
 
 		EnemyMovementFSM();
 	}
 
-    void Roam()
-    {
-        if (WayPoints.Length == 0) return;
-
-        //Waypoint System
-        float buffer = 0.5f;
-        if ((this.transform.position - WayPoints[CurIndex].position).sqrMagnitude > buffer)
-        {
-            Vector3 newPos = Vector3.MoveTowards(this.transform.position, WayPoints[CurIndex].transform.position, Time.deltaTime * E_MovementSpeed);
-            this.transform.position = newPos;
-        }
-        else
-        {
-            if (CurIndex < WayPoints.Length-1)
-                ++CurIndex;
-            else
-                CurIndex = 0;
-        }
-    }
-
 	void EnemyMovementFSM()
 	{
-		switch(Enemy_MState)
+		switch(mState)
 		{
-// ===================================================================================================================
-// #IDLE STATE
-
-			case FSM_M.mSTATE_IDLE:
-
-                if (this.theModel.CollisionRegions.inRng_Chase)	// if Player in my sight		
+			case FSM_M.IDLE:
+				if(this.theModel.WalkCollisionRegion.inRng_Chase)	// if Player in sight		
 				{
 					delay = IDLE_DELAY;
-					Enemy_MState = FSM_M.mSTATE_CHASE;			 
+					mState = FSM_M.CHASE;			 
 				}
-				else 												// Player not in my sight
+				else 												// Player not in sight
 				{
 					//Debug.Log("mIDLE: " + delay + "s");
 					delay -= Time.deltaTime;						
 					
-					if(delay <= 0)									// if Im done slacking,
+					if(delay <= 0)								
 					{
 						delay = IDLE_DELAY;
-						Enemy_MState = FSM_M.mSTATE_ROAM;			 
+						mState = FSM_M.ROAM;			 
 					}
 				}
 				break;
 
-// #IDLE STATE
-// ===================================================================================================================
-// #ROAM STATE
-
-			case FSM_M.mSTATE_ROAM:										// I(Enemy) roam around waypts to find player
-                if (this.theModel.CollisionRegions.inRng_Chase)		// if Player/objective in my sight		
+			// to do: modify this code such that enemies would head to areas player needs to protect
+			case FSM_M.ROAM:										
+				if(this.theModel.WalkCollisionRegion.inRng_Chase)		// if Player/objective in sight		
 				{
-					Enemy_MState = FSM_M.mSTATE_CHASE;					 
+					mState = FSM_M.CHASE;					 
 				}
-				else 													// Player went out of my sight		
+				else 													// Player went out of sight		
 				{
-                    //Debug.Log("mRoam");
-                    Roam(); //WayPoints?						 
-				}
-				break;
-
-// #ROAM STATE
-// ===================================================================================================================
-// #CHASE STATE
-
-			case FSM_M.mSTATE_CHASE:									// I(Enemy) targets and chases player/objective
-
-                if (this.theModel.CollisionRegions.inRng_Chase)		// if Player/objective still in my sight		
-				{
-                    if (this.theModel.CollisionRegions.inRng_Fire)	// if Player/objective in my rng	
+					if(waypointList.Count > 1)
 					{
-						Enemy_MState = FSM_M.mSTATE_COMBAT;				 
+						this.transform.position = Vector2.MoveTowards(this.transform.position, 
+					                                              	  waypointList[nextWaypt].position,
+						                                              moveSpeed*Time.deltaTime);
+						
+						// if AI reaches targeted waypt
+						if( (waypointList[nextWaypt].position-transform.position).sqrMagnitude < tolLength )
+						{
+							++nextWaypt;				// move to next waypt
+							if(nextWaypt > waypointList.Count-1)
+							{
+								mState = FSM_M.IDLE;
+								nextWaypt = 0;
+							}
+						}
 					}
-					else 												// Player/objective not in my rng yet
-					{
-                        if (this.UnitType == UType.UNIT_E_BOMBER)
-                        {
-                            //Debug.Log("mOBJECTIVE FOUND, HEADING THR...");
-                        }
-                        else
-                        {
-                            //Debug.Log("mPLAYER IN SIGHT, CHASING...");
-                            // move to player
-                            this.transform.position = Vector2.MoveTowards(this.transform.position, Player.transform.position,
-                                                                 alertMoveSpeed * Time.deltaTime);
-                        }
-					}
-				}
-				else 													// Player went out of my sight		
-				{
-					Enemy_MState = FSM_M.mSTATE_IDLE;					 
 				}
 				break;
 
-// #CHASE STATE
-// ===================================================================================================================
-// #COMBAT STATE
+		case FSM_M.CHASE:			 
+				if(this.UnitType != UType.UNIT_E_BOMBER)
+				{
+					if(this.theModel.WalkCollisionRegion.inRng_Chase)		// if Player/objective still in sight		
+					{
+						if(this.theModel.WalkCollisionRegion.inRng_Fire)	// if Player/objective in rng	
+						{
+							delay = 0;
+							mState = FSM_M.COMBAT;	
+							
+							Vector2 playerPos = new Vector2(Player.transform.position.x, Player.transform.position.y);
+							if((strafeTargetPos-playerPos).magnitude > strafeLength*strafeLength)
+								strafeTargetPos	= new Vector2(this.transform.position.x, this.transform.position.y);
+						}
+						else 												// Player/objective not in rng yet
+						{		
+							// move to player
+							this.transform.position = Vector2.MoveTowards(this.transform.position, 
+						                                              	  Player.transform.position,
+						                                     	 		  alertMoveSpeed*Time.deltaTime);
+						}
+					}
+					else 													// Player went out of sight		
+					{
+						mState = FSM_M.IDLE;					 
+					}
+				}
+				else
+				{				
+//					this.transform.position = Vector2.MoveTowards(this.transform.position, 
+//				                                              	  objective.transform.position,
+//				                                     	 		  alertMoveSpeed*Time.deltaTime);
+				}
+				break;
 
-			case FSM_M.mSTATE_COMBAT:								// in combat with player
-				// movement codes here
-				// ... 
+			case FSM_M.COMBAT:								// in combat with player
+				// strafe movement randomization
+				for(int i = 0; i < random_values.Length; ++i)
+				{
+					random_values[i] = Random.value;
+				}
+				if(random_values[0] < 0.05)	// 5% chance of strafing rightwards
+				{
+					strafeTargetPos.x += 10;	
+				}
+				if(random_values[1] < 0.05)	// 5% chance of strafing leftwards
+				{
+					strafeTargetPos.x -= 10;	
+				}
+				if(random_values[2] < 0.05)	// 5% chance of strafing upwards
+				{
+					strafeTargetPos.y += 10;	
+				}
+				if(random_values[3] < 0.05)	// 5% chance of strafing downwards
+				{
+					strafeTargetPos.y -= 10;	
+				}
 
+				// strafe movement 
+				this.transform.position = Vector2.MoveTowards(this.transform.position,
+			                                               	  strafeTargetPos,
+				                                              alertMoveSpeed*Time.deltaTime);
 				EnemyCombatFSM();
 				break;
 
-// #COMBAT STATE
-// ===================================================================================================================
-// #FLEE STATE
-
-			case FSM_M.mSTATE_FLEE:									// flee from player
-				//Debug.Log("mFLEE");				
+			case FSM_M.FLEE:									
+				Debug.Log("mFLEE");				
 				break;
 
-// #FLEE STATE
-// ===================================================================================================================
-// #DEAD STATE
-
-			case FSM_M.mSTATE_DEAD:
-				//Debug.Log("mDEAD");
-				Enemy_CState = FSM_C.cSTATE_NULL;	
+			case FSM_M.DEAD:
+				Debug.Log("mDEAD");
+				cState = FSM_C.NULL;	
 				break;
 
-// #DEAD STATE
-// ===================================================================================================================
-// #DEFAULT
 			default:
-				Enemy_MState = FSM_M.mSTATE_IDLE;	
+				mState = FSM_M.IDLE;	
 				break;
 		}
 	}
 	
 	void EnemyCombatFSM()
 	{
-		switch(Enemy_CState)
+		switch(cState)
 		{
-// ===================================================================================================================
-// #NULL STATE
-
-			case FSM_C.cSTATE_NULL:
-
-                if (this.theModel.CollisionRegions.inRng_Fire)	// if Player/objective enters my rng	
-				{													 
-					if(this.UnitType == UType.UNIT_E_BOMBER)
-						Enemy_CState = FSM_C.cSTATE_BOMB;
-					else
-						Enemy_CState = FSM_C.cSTATE_SHOOT;
-				}
+			case FSM_C.NULL:											 
+				if(this.UnitType == UType.UNIT_E_BOMBER)
+					cState = FSM_C.BOMB;
+				else
+					cState = FSM_C.SHOOT;
 				break;
 
-// #NULL STATE
-// ===================================================================================================================
-// #SHOOT STATE
-
-			case FSM_C.cSTATE_SHOOT:			// when I(Enemy) is in fire range with player (shooter types only)
-
-                if (this.theModel.CollisionRegions.inRng_Fire)	// if Player/objective still in my rng	
+			case FSM_C.SHOOT:			
+				if(this.theModel.WalkCollisionRegion.inRng_Fire)	// if Player/objective still in rng	
 				{
-					//Debug.Log("cSHOOT");
+					delay -= Time.deltaTime;						
 					
+					if(delay <= 0)									// fire rate ctrl
+					{
+						delay = FIRE_RATE;
+						firingScript.Fire(Player.transform.position);
+					}
 					// if I choose to flee, switch cstate to null, mstate to flee
 				}
-				else 												// Player/objective went out of my rng	
+				else 												// Player/objective went out of rng	
 				{
-					Enemy_CState = FSM_C.cSTATE_NULL;				 
-					Enemy_MState = FSM_M.mSTATE_CHASE;				 
+					cState = FSM_C.NULL;				 
+					mState = FSM_M.CHASE;				 
 				}
 				break;
 
-// #SHOOT STATE
-// ===================================================================================================================
-// #BOMB STATE
-
-			case FSM_C.cSTATE_BOMB:	 			// when I(Enemy) is in range with obj. (bomber types only)
-				//Debug.Log("cBOMB");
+			case FSM_C.BOMB:	 			
+				Debug.Log("cBOMB");
 				break;
 
-// #BOMB STATE
-// ===================================================================================================================
-// #DEFAULT
-
 			default:
-				Enemy_CState = FSM_C.cSTATE_NULL;	
+				cState = FSM_C.NULL;	
 				break;
 		}
 	}
+
+	// wont work cos it'd hit sight/fire range colliders...
+//	void OnTriggerStay2D(Collider2D col)
+//	{
+//		if(col.tag == "bullet_player")		//and enemy's bullet enters
+//		{
+//			hp -= 1;	//temp, chg to player's dmg (if we adding dmg in)
+//			Destroy(col.gameObject);
+//		}
+//	}
 }

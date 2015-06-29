@@ -25,33 +25,33 @@ public class TileScript : MonoBehaviour
         //Shift Tile (Right)
         if (Cam_Pos_X >= this.transform.position.x)
         {
-            float NewXPos = this.transform.position.x;
-            NewXPos += MapGenerator.GROUND_HOR * this.GetComponent<Collider>().bounds.size.x;
-            this.transform.position = new Vector3(NewXPos, this.transform.position.y, this.transform.position.z);
+            //float NewXPos = this.transform.position.x;
+            //NewXPos += MapGenerator.GROUND_HOR * this.GetComponent<Collider>().bounds.size.x;
+            //this.transform.position = new Vector3(NewXPos, this.transform.position.y, this.transform.position.z);
         }
 
         //Shift Tile (Left)
         if (Cam_Pos_X <= this.transform.position.x)
         {
-            float NewXPos = this.transform.position.x;
-            NewXPos -= MapGenerator.GROUND_HOR * this.GetComponent<Collider>().bounds.size.x;
-            this.transform.position = new Vector3(NewXPos, this.transform.position.y, this.transform.position.z);
+			//float NewXPos = this.transform.position.x;
+            //NewXPos -= MapGenerator.GROUND_HOR * this.GetComponent<Collider>().bounds.size.x;
+            //this.transform.position = new Vector3(NewXPos, this.transform.position.y, this.transform.position.z);
         }
 
         //Shift Tile (Up)
         if (Cam_Pos_Y >= this.transform.position.y)
         {
-            float NewYPos = this.transform.position.y;
-            NewYPos += MapGenerator.GROUND_VER * this.GetComponent<Collider>().bounds.size.y;
-            this.transform.position = new Vector3(this.transform.position.x, NewYPos, this.transform.position.z);
+//            float NewYPos = this.transform.position.y;
+//            NewYPos += MapGenerator.GROUND_VER * this.GetComponent<Collider>().bounds.size.y;
+//            this.transform.position = new Vector3(this.transform.position.x, NewYPos, this.transform.position.z);
         }
 
         //Shift Tile (Left)
         if (Cam_Pos_Y <= this.transform.position.y)
         {
-            float NewYPos = this.transform.position.y;
-            NewYPos -= MapGenerator.GROUND_VER * this.GetComponent<Collider>().bounds.size.y;
-            this.transform.position = new Vector3(this.transform.position.x, NewYPos, this.transform.position.z);
+//            float NewYPos = this.transform.position.y;
+//            NewYPos -= MapGenerator.GROUND_VER * this.GetComponent<Collider>().bounds.size.y;
+//            this.transform.position = new Vector3(this.transform.position.x, NewYPos, this.transform.position.z);
         }
     }
 }

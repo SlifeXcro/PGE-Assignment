@@ -23,7 +23,7 @@ public class Mage : Unit
         this.Init();
 
         //Init Unit's Type
-        this.UnitType = UType.UNIT_MAGE;
+//        this.UnitType = UType.UNIT_MAGE;
 
         //Init Stats
         this.RandomizeStats();

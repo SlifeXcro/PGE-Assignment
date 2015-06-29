@@ -7,16 +7,13 @@ public class Unit : MonoBehaviour
     //Unit's Type
     public enum UType
     {
-        UNIT_DEFAULT,
-        UNIT_MAGE,
-        UNIT_E_BOMBER,
-        UNIT_E_SHOOTER
-    } public UType UnitType = UType.UNIT_DEFAULT;
-
+		UNIT_E_SHOOTER,	//e = enemy
+		UNIT_E_BOMBER
+	} public UType UnitType = UType.UNIT_E_SHOOTER;
+	
     //Check if Unit has Collided with Unwalkable Objects
     void OnTriggerEnter(Collider col)
     {
-       
     }
     void OnTriggerExit(Collider col)
     {
@@ -52,9 +49,9 @@ public class Unit : MonoBehaviour
         Debug.Log("Default Unit Stats Inited.");
         if (Stats != null)
             Stats.Set(1, Random.Range(300, 500),
-                         Random.Range(150, 250), Random.Range(100, 200),
-                         Random.Range(150, 250), Random.Range(100, 200),
-                         Random.Range(0.7f, 1.2f));
+                        Random.Range(150, 250), Random.Range(100, 200),
+                        Random.Range(150, 250), Random.Range(100, 200),
+                        Random.Range(0.7f, 1.2f));
     }
 
     //Self Init
@@ -69,8 +66,10 @@ public class Unit : MonoBehaviour
             RandomizeStats();
 
         //Init Game Object Tag
-        if (theModel.gameObject.tag == null)
-            theModel.gameObject.tag = this.gameObject.tag = "UNIT";
+		if (this.gameObject.tag == "Untagged")
+			theModel.gameObject.tag = "UNIT";
+		else
+			theModel.gameObject.tag = this.gameObject.tag;
     }
 
 	//Use this for initialization
@@ -83,11 +82,8 @@ public class Unit : MonoBehaviour
     public void StaticUpdate()
     {
         //Cap Z Pos
-        if (this.transform.position.z != 0)
-        {
-            Vector3 CapZ = new Vector3(transform.position.x, transform.position.y, 0.0f);
-            this.transform.position = CapZ;
-        }
+        Vector3 CapZ = new Vector3(transform.position.x, transform.position.y, 0.0f);
+        this.transform.position = CapZ;
 
         //Detect if Unit has been Selected
         //if (InputScript.Instance.InputCollided(theModel.collider, true))
@@ -118,5 +114,16 @@ public class Unit : MonoBehaviour
 	void Update () 
     {
         StaticUpdate();
+		
+		// if enemy's bullet hit player units
+		if(this.tag == "Player" && theModel.other != null)
+		{
+			if(theModel.other.gameObject.tag == "bullet_enemy")		
+			{
+				//hp -= 1;	//temp, chg to enemy's dmg (if we adding dmg in)
+				Destroy(theModel.other.gameObject);
+				theModel.other = null;
+			}
+		}
 	}
 }
