@@ -52,7 +52,7 @@ public class Model : MonoBehaviour
 
 	void OnCollisionEnter2D(Collision2D col)
 	{
-		Debug.Log("MODEL COLLIDE");
+//		Debug.Log("MODEL COLLIDE");
 		other = col;				// rmb to set model's other to null after using this col info
 	}
 }
