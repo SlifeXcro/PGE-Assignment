@@ -70,7 +70,7 @@ public class Firing : MonoBehaviour
 			Proceed = true;
 			#if UNITY_EDITOR || UNITY_STANDALONE
 			BulletDir = (UserTouch.Instance.transform.position - this.transform.position).normalized;
-			#elif UNITY_ANDROID
+			#elif UNITY_ANDROID || UNITY_IOS
 			if (InputScript.TouchDown && Input.touches.Length <= 1)
 				BulletDir = (UserTouch.Instance.transform.position - this.transform.position).normalized;
 			else if (Input.touches.Length > 1)
@@ -119,7 +119,7 @@ public class Firing : MonoBehaviour
 			default:
 				break;
 			}
-			#elif UNITY_ANDROID
+			#elif UNITY_ANDROID || UNITY_IOS
 			BulletDir = Analog.Instance.GetTravelDir();
 			#endif
 		}
@@ -153,7 +153,7 @@ public class Firing : MonoBehaviour
 	public void Fire(Vector3 target = new Vector3())
 	{
 		Bullet NewBullet = Instantiate (BulletPrefab, this.transform.position, Quaternion.identity) as Bullet;
-		//NewBullet.transform.parent = Parent;
+
 		NewBullet.transform.parent = Parent;
 		NewBullet.tag = bulletTag_enemy;
 		BulletDir = (target - this.transform.position).normalized;

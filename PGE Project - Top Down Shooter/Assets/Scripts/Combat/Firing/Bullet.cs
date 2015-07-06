@@ -14,8 +14,8 @@ public class Bullet : MonoBehaviour
 	
 	}
 
-	public void OnTriggerEnter2D(Collider2D col){
-		Vector2 bullet_pos = transform.position;
+	public void OnTriggerEnter(Collider col) {
+		Vector3 bullet_pos = transform.position;
 		if (col.tag == "STATIC_OBJ") {
 			Destroy (gameObject);
 			ParticleEmitter explosion = (ParticleEmitter)Instantiate

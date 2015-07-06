@@ -62,7 +62,7 @@ public class UserTouch : MonoBehaviour
 #if UNITY_EDITOR || UNITY_STANDALONE
         TouchPos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0));
         this.transform.position = new Vector3(TouchPos.x, TouchPos.y, 0);
-#elif UNITY_ANDROID
+#elif UNITY_ANDROID || UNITY_IOS
         bool isTouching = false;
         for (short i = 0; i < Input.touches.Length; ++i)
         {

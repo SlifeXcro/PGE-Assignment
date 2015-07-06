@@ -39,7 +39,7 @@ public class InputScript : MonoBehaviour
         TouchPos = new Vector3(WorldPos.x, WorldPos.y, 0);
         if (col.bounds.Contains(TouchPos))
             Collided = true;
-#elif UNITY_ANDROID
+#elif UNITY_ANDROID || UNITY_IOS
         foreach (Touch touch in Input.touches)
         {
             WorldPos = Camera.main.ScreenToWorldPoint(touch.position);
@@ -57,7 +57,7 @@ public class InputScript : MonoBehaviour
 #if UNITY_EDITOR || UNITY_STANDALONE
                 if (Input.GetMouseButtonUp(0))
                     proceed = true;
-#elif UNITY_ANDROID
+#elif UNITY_ANDROID || UNITY_IOS
                 bool allClear = true;
                 foreach (Touch touch in Input.touches)
                 {
@@ -86,7 +86,7 @@ public class InputScript : MonoBehaviour
         CollidedPos = TouchPos;
         if (col.bounds.Contains(TouchPos))
             Collided = true;
-#elif UNITY_ANDROID
+#elif UNITY_ANDROID || UNITY_IOS
         foreach (Touch touch in Input.touches)
         {
             WorldPos = Camera.main.ScreenToWorldPoint(touch.position);
@@ -105,7 +105,7 @@ public class InputScript : MonoBehaviour
 #if UNITY_EDITOR || UNITY_STANDALONE
                 if (Input.GetMouseButtonUp(0))
                     proceed = true;
-#elif UNITY_ANDROID
+#elif UNITY_ANDROID || UNITY_IOS
                 bool allClear = true;
                 foreach (Touch touch in Input.touches)
                 {
@@ -129,7 +129,7 @@ public class InputScript : MonoBehaviour
             TouchDown = true;
         if (Input.GetMouseButtonUp(0))
             TouchDown = false;
-#elif UNITY_ANDROID
+#elif UNITY_ANDROID || UNITY_IOS
         //Analog
         foreach (Touch touch in Input.touches)
         {

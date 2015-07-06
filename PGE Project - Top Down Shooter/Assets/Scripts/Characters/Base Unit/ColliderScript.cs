@@ -6,7 +6,7 @@ public class ColliderScript : MonoBehaviour
     //Flag to Check if Unit has made contact with other collider
 	public bool inRegion = false;
 
-	void OnTriggerEnter2D(Collider2D col)
+	void OnTriggerEnter(Collider col)
     {
 		switch(tag)	// check this col's tag
 		{
@@ -45,7 +45,7 @@ public class ColliderScript : MonoBehaviour
 		}
     }
 
-	void OnTriggerExit2D(Collider2D col)
+	void OnTriggerExit(Collider col)
     {
 		switch(tag)	// check this col's tag
 		{

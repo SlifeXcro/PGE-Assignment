@@ -3,24 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Enemy : Unit {
-
-	// Stats
-	public short level 			= 1;				// may not be needed
-	public float maxHP 			= 20;
-	public float moveSpeed 		= 2.0f;				// speed when roaming
-	public float alertMoveSpeed = 5.0f;				// speed when chasing/in combat
-	public float dmg 			= 1;			
-	public float armour 		= 0;				// (defense)
-	public string type 			= "Default"; 		// default = normal enemy (shooter)
-	public string name 			= "E_Shooter"; 	
-
-	public float IDLE_DELAY 	= 3.0f;				// delay time for chging state from idle to roam
-	public float FIRE_RATE		= 0.2f;			
-
-	public float tolLength		= 2.0f;				// length to determine whether AI has reach waypt
-	public float strafeLength	= 5.0f;				// strafe length max dist when in combat
-
-	// Waypoints
+	
 	public List<Transform> waypointList = new List<Transform>();
 
 	int nextWaypt;							// stores next waypoint location
@@ -29,15 +12,13 @@ public class Enemy : Unit {
 	
 	float[] random_values = new float[4];	// to store random values (chance) of strafe movement in combat
 	Vector2 strafeTargetPos;				// strafing move pos when in combat
+	
+	EnemyStats enemyStats;
 	Firing firingScript;
-
 	GameObject Player;	
-
-	// UI
 	HealthBar HPbar;	
 
-	// movement FSM
-	private enum FSM_M		
+	private enum FSM_M		// movement FSM
 	{
 		IDLE,
 		ROAM,		 
@@ -47,8 +28,8 @@ public class Enemy : Unit {
 		DEAD
 	} private FSM_M mState = FSM_M.IDLE;
 
-	// combat FSM
-	private enum FSM_C		
+
+	private enum FSM_C		// combat FSM	
 	{
 		NULL,		// used when enemy is not in combat state (i.e. not in fire rng)
 		SHOOT,		 
@@ -60,19 +41,20 @@ public class Enemy : Unit {
 	{
 		//Class has been inherited
 		Inherited = true;
-		
 		//Init from Parent Class
 		this.Init();
 	
+
 		Player = GameObject.FindGameObjectWithTag("Player");
+		enemyStats = transform.GetComponentInChildren<EnemyStats>();
 
-		delay = IDLE_DELAY;
+		delay = enemyStats.IDLE_DELAY;
 		
-		hp = maxHP;
+		hp = enemyStats.maxHP;
 		HPbar = this.GetComponent<HealthBar>();
-		HPbar.maxHP = maxHP;
+		HPbar.maxHP = enemyStats.maxHP;
 
-		firingScript = this.GetComponentInChildren<Firing>();
+		firingScript = this.GetComponent<Firing>();
 
 		
 		// Spawn pos (temp)
@@ -98,17 +80,17 @@ public class Enemy : Unit {
 
 	void Update()
 	{
-		//Update from Parent Class
+		// Update from Parent Class
 		this.StaticUpdate();
 		
 		// sprite's collision
-		if(theModel.WalkCollisionRegion.HitboxTrigger)
+		if(theModel.CollisionRegion.HitboxTrigger)
 		{
 			// (bullet's owner check done in collision script)
 			//if(theModel.other.gameObject.tag == "bullet_player")		
 			//{
 			hp -= 1;	//temp, chg to player's dmg (if we adding dmg in)
-			theModel.WalkCollisionRegion.setHitboxTriggerFalse();
+			theModel.CollisionRegion.setHitboxTriggerFalse();
 			//(bullet destroyed in coll script too)
 			//Destroy(theModel.other.gameObject);
 			//theModel.other = null;
@@ -134,9 +116,9 @@ public class Enemy : Unit {
 		switch(mState)
 		{
 			case FSM_M.IDLE:
-				if(this.theModel.WalkCollisionRegion.inRng_Chase)	// if Player in sight		
+				if(this.theModel.CollisionRegion.inRng_Chase)	// if Player in sight		
 				{
-					delay = IDLE_DELAY;
+					delay = enemyStats.IDLE_DELAY;
 					mState = FSM_M.CHASE;			 
 				}
 				else 												// Player not in sight
@@ -146,7 +128,7 @@ public class Enemy : Unit {
 					
 					if(delay <= 0)								
 					{
-						delay = IDLE_DELAY;
+						delay = enemyStats.IDLE_DELAY;
 						mState = FSM_M.ROAM;			 
 					}
 				}
@@ -154,7 +136,7 @@ public class Enemy : Unit {
 
 			// to do: modify this code such that enemies would head to areas player needs to protect
 			case FSM_M.ROAM:										
-				if(this.theModel.WalkCollisionRegion.inRng_Chase)		// if Player/objective in sight		
+				if(this.theModel.CollisionRegion.inRng_Chase)		// if Player/objective in sight		
 				{
 					mState = FSM_M.CHASE;					 
 				}
@@ -164,10 +146,10 @@ public class Enemy : Unit {
 					{
 						this.transform.position = Vector2.MoveTowards(this.transform.position, 
 					                                              	  waypointList[nextWaypt].position,
-						                                              moveSpeed*Time.deltaTime);
+						                                              enemyStats.moveSpeed*Time.deltaTime);
 						
 						// if AI reaches targeted waypt
-						if( (waypointList[nextWaypt].position-transform.position).sqrMagnitude < tolLength )
+						if( (waypointList[nextWaypt].position-transform.position).sqrMagnitude < enemyStats.tolLength )
 						{
 							++nextWaypt;				// move to next waypt
 							if(nextWaypt > waypointList.Count-1)
@@ -183,15 +165,15 @@ public class Enemy : Unit {
 		case FSM_M.CHASE:			 
 				if(this.UnitType != UType.UNIT_E_BOMBER)
 				{
-					if(this.theModel.WalkCollisionRegion.inRng_Chase)		// if Player/objective still in sight		
+					if(this.theModel.CollisionRegion.inRng_Chase)		// if Player/objective still in sight		
 					{
-						if(this.theModel.WalkCollisionRegion.inRng_Fire)	// if Player/objective in rng	
+						if(this.theModel.CollisionRegion.inRng_Fire)	// if Player/objective in rng	
 						{
 							delay = 0;
 							mState = FSM_M.COMBAT;	
 							
 							Vector2 playerPos = new Vector2(Player.transform.position.x, Player.transform.position.y);
-							if((strafeTargetPos-playerPos).magnitude > strafeLength*strafeLength)
+							if((strafeTargetPos-playerPos).magnitude > enemyStats.strafeLength*enemyStats.strafeLength)
 								strafeTargetPos	= new Vector2(this.transform.position.x, this.transform.position.y);
 						}
 						else 												// Player/objective not in rng yet
@@ -199,7 +181,7 @@ public class Enemy : Unit {
 							// move to player
 							this.transform.position = Vector2.MoveTowards(this.transform.position, 
 						                                              	  Player.transform.position,
-						                                     	 		  alertMoveSpeed*Time.deltaTime);
+						                                     	 		  enemyStats.alertMoveSpeed*Time.deltaTime);
 						}
 					}
 					else 													// Player went out of sight		
@@ -241,7 +223,7 @@ public class Enemy : Unit {
 				// strafe movement 
 				this.transform.position = Vector2.MoveTowards(this.transform.position,
 			                                               	  strafeTargetPos,
-				                                              alertMoveSpeed*Time.deltaTime);
+				                                              enemyStats.alertMoveSpeed*Time.deltaTime);
 				EnemyCombatFSM();
 				break;
 
@@ -272,13 +254,13 @@ public class Enemy : Unit {
 				break;
 
 			case FSM_C.SHOOT:			
-				if(this.theModel.WalkCollisionRegion.inRng_Fire)	// if Player/objective still in rng	
+				if(this.theModel.CollisionRegion.inRng_Fire)	// if Player/objective still in rng	
 				{
 					delay -= Time.deltaTime;						
 					
 					if(delay <= 0)									// fire rate ctrl
 					{
-						delay = FIRE_RATE;
+						delay = enemyStats.FIRE_RATE;
 						firingScript.Fire(Player.transform.position);
 					}
 					// if I choose to flee, switch cstate to null, mstate to flee
@@ -300,10 +282,10 @@ public class Enemy : Unit {
 		}
 	}
 
-	// wont work cos it'd hit sight/fire range colliders...
-//	void OnTriggerStay2D(Collider2D col)
+	// doesnt work cos AI got multiple colliders
+//	void OnTriggerEnter(Collider col)
 //	{
-//		if(col.tag == "bullet_player")		//and enemy's bullet enters
+//		if(col.gameObject.tag == "bullet_player")
 //		{
 //			hp -= 1;	//temp, chg to player's dmg (if we adding dmg in)
 //			Destroy(col.gameObject);

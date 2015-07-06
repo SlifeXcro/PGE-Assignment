@@ -6,8 +6,8 @@ public class Model : MonoBehaviour
 	//Every Model has it's own Walking Collision Region
 	public bool isAnimated = true;
 	public short CurAnimationIndex = 0;
-	public CollisionRegionFlags WalkCollisionRegion;
-	public Collision2D other;								// obj colliding with model
+	public CollisionRegionFlags CollisionRegion;
+	public Collider other;								// obj colliding with model
 	
 	//Model Facing Dir
 	public enum E_Dir
@@ -50,9 +50,8 @@ public class Model : MonoBehaviour
 	
 	}
 
-	void OnCollisionEnter2D(Collision2D col)
+	void OnTriggerEnter(Collider col)
 	{
-//		Debug.Log("MODEL COLLIDE");
 		other = col;				// rmb to set model's other to null after using this col info
 	}
 }
