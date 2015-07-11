@@ -16,7 +16,7 @@ public class Bullet : MonoBehaviour
 
 	public void OnTriggerEnter(Collider col) {
 		Vector3 bullet_pos = transform.position;
-		if (col.tag == "STATIC_OBJ") {
+		if (col.tag == "STATIC_OBJ" || (col.tag == "Player" && this.transform.parent.tag != "Player")) {
 			Destroy (gameObject);
 			ParticleEmitter explosion = (ParticleEmitter)Instantiate
 				(BulletExplosion, bullet_pos, Quaternion.identity);
