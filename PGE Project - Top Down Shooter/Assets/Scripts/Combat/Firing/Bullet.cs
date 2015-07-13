@@ -16,10 +16,11 @@ public class Bullet : MonoBehaviour
 
 	public void OnTriggerEnter(Collider col) {
 		Vector3 bullet_pos = transform.position;
-		if (col.tag == "STATIC_OBJ" || (col.tag == "Player" && this.transform.parent.tag != "Player")) {
+		if (col.tag == "STATIC_OBJ" /*|| (col.tag == "Player" && this.transform.parent.tag != "Player")*/) {
 			Destroy (gameObject);
 			ParticleEmitter explosion = (ParticleEmitter)Instantiate
 				(BulletExplosion, bullet_pos, Quaternion.identity);
+			explosion.transform.parent = transform.parent;
 			explosion.Emit();
 		}
 	}

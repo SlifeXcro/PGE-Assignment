@@ -7,7 +7,7 @@ public class Model : MonoBehaviour
 	public bool isAnimated = true;
 	public short CurAnimationIndex = 0;
 	public CollisionRegionFlags CollisionRegion;
-	public Collider other;								// obj colliding with model
+	//public Collider other;								// obj colliding with model
 	
 	//Model Facing Dir
 	public enum E_Dir
@@ -50,8 +50,9 @@ public class Model : MonoBehaviour
 	
 	}
 
-	void OnTriggerEnter(Collider col)
-	{
-		other = col;				// rmb to set model's other to null after using this col info
-	}
+//	void OnTriggerEnter(Collider col)
+//	{
+//		print (col);
+//		other = col;				// rmb to set model's other to null after using this col info
+//	}
 }

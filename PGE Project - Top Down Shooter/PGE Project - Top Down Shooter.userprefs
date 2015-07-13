@@ -1,11 +1,14 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Characters\AI\Pathfinding.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Characters\AI\AIManager.cs">
     <Files>
-      <File FileName="Assets\Scripts\Characters\AI\Pathfinding.cs" Line="5" Column="43" />
-      <File FileName="Assets\Scripts\Combat\Firing\Weapon.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Characters\AI\Grid.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Characters\AI\Node.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Characters\Classes\Enemy.cs" Line="113" Column="12" />
+      <File FileName="Assets\Scripts\Characters\AI\AIManager.cs" Line="95" Column="60" />
+      <File FileName="Assets\Scripts\Characters\AI\Pathfinding.cs" Line="41" Column="5" />
+      <File FileName="Assets\Scripts\Characters\Base Unit\ColliderScript.cs" Line="52" Column="65" />
+      <File FileName="Assets\Scripts\Characters\Base Unit\CollisionRegionFlags.cs" Line="24" Column="70" />
+      <File FileName="Assets\Scripts\Environment\DefendZone.cs" Line="25" Column="16" />
+      <File FileName="Assets\Scripts\Combat\Firing\Firing.cs" Line="153" Column="2" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

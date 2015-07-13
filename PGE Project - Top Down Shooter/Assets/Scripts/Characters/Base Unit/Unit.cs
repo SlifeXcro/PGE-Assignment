@@ -7,8 +7,8 @@ public class Unit : MonoBehaviour
     //Unit's Type
     public enum UType
     {
-		UNIT_E_SHOOTER,	//e = enemy
-		UNIT_E_BOMBER
+		UNIT_E_SHOOTER,		//e = enemy
+		UNIT_E_DESTROYER
 	} public UType UnitType = UType.UNIT_E_SHOOTER;
 	
     //Check if Unit has Collided with Unwalkable Objects
@@ -114,16 +114,5 @@ public class Unit : MonoBehaviour
 	void Update () 
     {
         StaticUpdate();
-		
-		// if enemy's bullet hit player units
-		if(this.tag == "Player" && theModel.other != null)
-		{
-			if(theModel.other.gameObject.tag == "bullet_enemy")		
-			{
-				//hp -= 1;	//temp, chg to enemy's dmg (if we adding dmg in)
-				Destroy(theModel.other.gameObject);
-				theModel.other = null;
-			}
-		}
 	}
 }

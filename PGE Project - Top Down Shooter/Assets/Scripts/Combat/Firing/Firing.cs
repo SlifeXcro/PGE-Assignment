@@ -150,12 +150,12 @@ public class Firing : MonoBehaviour
 	}
 
 	// AI fire
-	public void Fire(Vector3 target = new Vector3())
+	public void Fire(Vector3 target = new Vector3(), string addToTag = "")
 	{
-		Bullet NewBullet = Instantiate (BulletPrefab, this.transform.position, Quaternion.identity) as Bullet;
+		Bullet NewBullet = Instantiate(BulletPrefab, this.transform.position, Quaternion.identity) as Bullet;
 
 		NewBullet.transform.parent = Parent;
-		NewBullet.tag = bulletTag_enemy;
+		NewBullet.tag = bulletTag_enemy + addToTag;
 		BulletDir = (target - this.transform.position).normalized;
 
 		NewBullet.GetComponent<SpriteRenderer>().color = Color.black;	// temp (use other texture)

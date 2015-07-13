@@ -9,7 +9,7 @@ public class MapGenerator : MonoBehaviour
 	public static int GROUND_HOR = 8, GROUND_VER = 4;
 
 	//Use this for initialization
-	void Start () 
+	void Awake () 
     {
 	    //Generate Ground
         for (short i = 0; i < GROUND_HOR; ++i)

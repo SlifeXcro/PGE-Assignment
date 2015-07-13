@@ -5,33 +5,39 @@ using System.Collections.Generic;
 public class Grid : MonoBehaviour {
 	public bool displayGrid = false;
 	public LayerMask unwalkableMask;
-	public Vector2 gridWorldSize;
+	public Vector3 gridWorldSize;
 	public float nodeRadius;			// size of 1 node
 	Node[,] grid;
 
 	float nodeDiameter;
 	int gridSizeX, gridSizeY;			// no. of rows/columns 
 
-	void Start() {
-		nodeDiameter = nodeRadius * 2;
+	void Awake() {
+		nodeRadius *= AspectRatio.Instance.Scale;					// adjust according to aspect ratio
+		nodeDiameter = nodeRadius*2; 
+		gridWorldSize.x *= AspectRatio.Instance.Scale;				// adjust according to aspect ratio
+		gridWorldSize.y *= AspectRatio.Instance.Scale;				// adjust according to aspect ratio
 		gridSizeX = Mathf.RoundToInt(gridWorldSize.x/nodeDiameter);
 		gridSizeY = Mathf.RoundToInt(gridWorldSize.y/nodeDiameter);
 		CreateGrid();
 	}
+	public int MaxSize {
+		get { 
+			return gridSizeX*gridSizeY;
+		}
+	}
 
 	void CreateGrid() {
 		grid = new Node[gridSizeX, gridSizeY];
-		Vector2 worldBtmLeft = new Vector2(transform.position.x, transform.position.y)
-								 - Vector2.right*gridWorldSize.x/2 - Vector2.up*gridWorldSize.y/2;
-
+		Vector3 worldBtmLeft = transform.position - Vector3.right*gridWorldSize.x/2 - Vector3.up*gridWorldSize.y/2;
 
 		for(int x = 0; x < gridSizeX; ++x)
 		{
 			for(int y = 0; y < gridSizeY; ++y)
 			{
-				Vector2 worldPoint = worldBtmLeft + Vector2.right*(x*nodeDiameter + nodeRadius) + Vector2.up*(y*nodeDiameter + nodeRadius);
-				bool walkable = !(Physics.CheckSphere(new Vector3(worldPoint.x, worldPoint.y, 0), 
-				                                      nodeRadius, unwalkableMask));
+				Vector3 worldPoint = worldBtmLeft + Vector3.right*(x*nodeDiameter + nodeRadius) 
+									+ Vector3.up*(y*nodeDiameter + nodeRadius);
+				bool walkable = !(Physics.CheckSphere(worldPoint, nodeRadius, unwalkableMask));
 				grid[x,y] = new Node(walkable, worldPoint, x, y);
 			}
 		}
@@ -45,7 +51,7 @@ public class Grid : MonoBehaviour {
 		{
 			for(int y = -1; y <= 1; ++y)
 			{
-				if(x == 0 && y == 0)		// ctr (current block is node given)
+				if(x == 0 && y == 0)						// ctr (current block is node given)
 					continue;
 
 				int checkX = node.gridX + x;
@@ -72,26 +78,24 @@ public class Grid : MonoBehaviour {
 
 		return grid[x,y];
 	}
-
-	public List<Node> path;
+	
+#if UNITY_EDITOR
+	// grid visualization
 	void OnDrawGizmos() {
-		if(displayGrid)
+		Gizmos.DrawWireCube(transform.position, (new Vector3(gridWorldSize.x, gridWorldSize.y, 1)));
+		if(grid != null && displayGrid)
 		{
-			Gizmos.DrawWireCube(transform.position, new Vector3(gridWorldSize.x, gridWorldSize.y, 1));
-
-			if(grid != null)
+			foreach(Node n in grid)
 			{
-				foreach(Node n in grid)
-				{
-					Gizmos.color = (n.walkable)? Color.white : Color.red;
-					if(path != null)
-					{
-						if(path.Contains(n))
-							Gizmos.color = Color.black;
-					}
-					Gizmos.DrawCube(n.worldPos, Vector3.one*(nodeDiameter-0.1f));
-				}
+				if(n.walkable)
+					Gizmos.color = new Color(1,1,1,0.3f);
+				else
+					Gizmos.color = new Color(1,0,0,0.3f);
+
+				//Vector2 gridOffset = new Vector2(transform.position.x, transform.position.y);
+				Gizmos.DrawCube(n.worldPos/*-gridOffset*/, transform.root.localScale*(nodeDiameter-0.1f));
 			}
 		}
 	}
+#endif
 }

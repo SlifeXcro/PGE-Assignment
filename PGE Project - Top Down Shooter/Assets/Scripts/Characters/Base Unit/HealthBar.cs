@@ -3,22 +3,35 @@ using System.Collections;
 
 public class HealthBar : MonoBehaviour {
 
-	public float maxHP = 100f;		//default
-	public float hp;
-	public GameObject HPbar;
+	public bool isEnemy = true;
 
 	float barScale;					// scale of hp bar (0 - 1.0f, 1 being 100% hp)
 
-	// Use this for initialization
+	Enemy enemy;
+	EnemyStats enemyStats;
+	DefendZone defendZone;
+
 	void Start () 
 	{
-		hp = maxHP;
+		if(isEnemy)
+		{
+			enemy = GetComponentInParent<Enemy>();
+			enemyStats = transform.parent.GetComponentInChildren<EnemyStats>();
+		}
+		else
+		{
+			defendZone = GetComponentInParent<DefendZone>();
+		}
 	}
-	
-	// Update is called once per frame
+
 	void Update () 
 	{
-		barScale = hp/maxHP;
-		HPbar.transform.localScale = new Vector3(barScale, HPbar.transform.localScale.y, HPbar.transform.localScale.z);
+		if(isEnemy)
+			barScale = enemy.hp/enemyStats.maxHP;
+		else
+			barScale = defendZone.hp/defendZone.maxHP;
+
+		transform.GetChild(1).localScale = new Vector3(barScale, transform.GetChild(1).localScale.y, 
+		                                               transform.GetChild(1).localScale.z);
 	}
 }

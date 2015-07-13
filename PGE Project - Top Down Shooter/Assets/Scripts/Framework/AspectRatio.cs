@@ -20,12 +20,12 @@ public class AspectRatio : MonoBehaviour
     }
 
     Vector2 OriginalRes, CurrentRes;
-    float Scale;
+	public float Scale;
     Vector2 Storage, InitialScale;
     public static bool AspectChanged = false;
 
     //Use this for initialization
-    void Start()
+    void Awake()
     {
         OriginalRes.Set(1280.0f, 720.0f);
 

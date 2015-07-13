@@ -55,7 +55,9 @@
      <Compile Include="Assets\Scripts\Audio\VolumeBar.cs" />
      <Compile Include="Assets\Scripts\Characters\AI\AIManager.cs" />
      <Compile Include="Assets\Scripts\Characters\AI\Grid.cs" />
+     <Compile Include="Assets\Scripts\Characters\AI\Heap.cs" />
      <Compile Include="Assets\Scripts\Characters\AI\Node.cs" />
+     <Compile Include="Assets\Scripts\Characters\AI\PathRequestManager.cs" />
      <Compile Include="Assets\Scripts\Characters\AI\Pathfinding.cs" />
      <Compile Include="Assets\Scripts\Characters\AI\TurretBehaviour.cs" />
      <Compile Include="Assets\Scripts\Characters\Base Unit\ColliderScript.cs" />
@@ -75,6 +77,7 @@
      <Compile Include="Assets\Scripts\Environment\Background.cs" />
      <Compile Include="Assets\Scripts\Environment\CheckPoint.cs" />
      <Compile Include="Assets\Scripts\Environment\DefendZone.cs" />
+     <Compile Include="Assets\Scripts\Environment\DoorAnim.cs" />
      <Compile Include="Assets\Scripts\Environment\Map.cs" />
      <Compile Include="Assets\Scripts\Environment\MapGenerator.cs" />
      <Compile Include="Assets\Scripts\Environment\Objectives.cs" />

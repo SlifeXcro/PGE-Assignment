@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class CollisionRegionFlags : MonoBehaviour 
 {
@@ -8,21 +9,19 @@ public class CollisionRegionFlags : MonoBehaviour
 	public bool inRng_Chase = false;
 	//Flag to Check if Unit (Enemy) has made contact and is now in rng with Player/objective
 	public bool inRng_Fire = false;
-
     //Flag to Check if Unit has made contact with Unwalkable Objects
 	public bool CollidedUnwalkable = false;
 
 	public bool HitboxTrigger = false;
 
+	// transform of collided obj (defendzone)
+	public Transform other;
+
 	List<ColliderScript> CollidersList = new List<ColliderScript>();
 
 	void Start()
 	{
-		foreach(Transform child in this.transform)	// iterator for child in this transform
-		{
-			CollidersList.Add(child.gameObject.GetComponent<ColliderScript>());
-			//Debug.Log(child.tag);
-		}
+		CollidersList = GetComponentsInChildren<ColliderScript>().ToList();
 	}
 
 	void Update()
@@ -40,6 +39,7 @@ public class CollisionRegionFlags : MonoBehaviour
 			else if(col.gameObject.tag == "RANGE")
 			{
 				inRng_Fire = col.inRegion;
+				other = col.other;
 			}
 			else if(col.gameObject.tag == "HITBOX")
 			{
