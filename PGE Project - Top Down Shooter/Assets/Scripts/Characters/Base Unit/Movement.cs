@@ -186,7 +186,8 @@ public class Movement : MonoBehaviour
         {
             //RayCast
             Vector3 theDir = new Vector3(Analog.Instance.GetTravelDir().x, Analog.Instance.GetTravelDir().y, 0);
-            bool ClearPath = !RayCastMovement(theUnit.theModel.CollisionRegion.transform.position, theDir, 1.0f);
+            //bool ClearPath = !RayCastMovement(theUnit.theModel.CollisionRegion.transform.position, theDir, 1.0f);
+            bool ClearPath = true;
 
             isMoving = true;
             theUnit.theModel.SetAnimation(1);

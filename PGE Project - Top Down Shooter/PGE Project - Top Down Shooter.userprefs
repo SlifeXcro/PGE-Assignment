@@ -1,14 +1,9 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Characters\Classes\Enemy.cs">
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Characters\Classes\PlayerInfo.cs">
     <Files>
-      <File FileName="Assets\Scripts\Characters\Classes\Enemy.cs" Line="377" Column="33" />
-      <File FileName="Assets\Scripts\Characters\AI\AIManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Characters\AI\Pathfinding.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Characters\Base Unit\ColliderScript.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Characters\Base Unit\CollisionRegionFlags.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Environment\DefendZone.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Combat\Firing\Firing.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Characters\Classes\Enemy.cs" Line="377" Column="48" />
+      <File FileName="Assets\Scripts\Characters\Classes\PlayerInfo.cs" Line="68" Column="32" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -51,7 +51,8 @@ public class Grid : MonoBehaviour {
 		{
 			for(int y = -1; y <= 1; ++y)
 			{
-				if(x == 0 && y == 0)						// ctr (current block is node given)
+				if((x == 0 && y == 0) || 		// ctr (current block is node given)
+				   (x != 0 && y != 0))			// or diagonals
 					continue;
 
 				int checkX = node.gridX + x;

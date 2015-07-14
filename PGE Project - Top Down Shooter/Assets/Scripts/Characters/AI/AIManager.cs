@@ -89,10 +89,14 @@ public class AIManager : MonoBehaviour {
 			++waveCount;
 
 			// spawn logic here
-			SpawnWave(1, Unit.UType.UNIT_E_DESTROYER, SPAWN_AREA.TOP, 
-			          spawnAreasList[(int)SPAWN_AREA.TOP].position, TARGET_AREA.TOP_L);
-			SpawnWave(spawnEnemiesCount, Unit.UType.UNIT_E_SHOOTER, SPAWN_AREA.TOP, 
-			          spawnAreasList[(int)SPAWN_AREA.TOP].position);
+			int randValue = Random.Range(0, 3);
+			if(waveCount == 1)
+				randValue = 0;
+			print (randValue);
+			SpawnWave(1, Unit.UType.UNIT_E_DESTROYER, (SPAWN_AREA)randValue, 
+			          spawnAreasList[randValue].position, (TARGET_AREA)randValue);
+			SpawnWave(spawnEnemiesCount, Unit.UType.UNIT_E_SHOOTER, (SPAWN_AREA)randValue, 
+			          spawnAreasList[randValue].position);
 		}
 	}
 
@@ -105,7 +109,7 @@ public class AIManager : MonoBehaviour {
 	void SpawnWave(int enemyCount, Unit.UType type, SPAWN_AREA spawnArea, 
 	               Vector3 spawnPos, TARGET_AREA targetArea = TARGET_AREA.TOP_L)
 	{
-		doorsList[(int)SPAWN_AREA.TOP].open = true;
+		doorsList[(int)spawnArea].open = true;
 
 		if(enemyCount <= 0)
 			return;

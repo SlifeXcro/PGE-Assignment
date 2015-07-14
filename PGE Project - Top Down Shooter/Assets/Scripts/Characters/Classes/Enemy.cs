@@ -49,6 +49,9 @@ public class Enemy : Unit {
 	{
 		Inherited = true;	//Class has been inherited
 		this.Init();		//Init from Parent Class
+
+        Global.ListOfEnemies.Add(this);
+        Global.b_StartChecking = true;
 		
 		Player = GameObject.FindGameObjectWithTag("Player").transform;
 		enemyStats = transform.GetComponentInChildren<EnemyStats>();
