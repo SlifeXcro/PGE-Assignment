@@ -68,8 +68,8 @@ public class Unit : MonoBehaviour
         //Init Game Object Tag
 		if (this.gameObject.tag == "Untagged")
 			theModel.gameObject.tag = "UNIT";
-		else
-			theModel.gameObject.tag = this.gameObject.tag;
+		//else
+		//	theModel.gameObject.tag = this.gameObject.tag;
     }
 
 	//Use this for initialization

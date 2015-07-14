@@ -37,6 +37,8 @@ public class Movement : MonoBehaviour
     public Map theMap;
     KeyCode CurrentKey = KeyCode.V;  
     Vector3 PlayerLastPos;
+	//bool isPaused = false; 	//pause
+	public ShopMenu ShpM;		//ShopMenu
 
     void OnTriggerEnter(Collider col)
     {
@@ -65,6 +67,9 @@ public class Movement : MonoBehaviour
 
         //Set Last Pos
         PlayerLastPos = theUnit.transform.position;
+
+		//Shop Close
+		//ShpM.ShopShow ();
 
 #if UNITY_EDITOR || UNITY_STANDALONE
 #elif UNITY_ANDROID
@@ -143,27 +148,39 @@ public class Movement : MonoBehaviour
     //Update is called once per frame
     void Update()
     {
-        //Set Camera Pan Unit
-        if (CameraPan.Instance.theUnit != null && CameraPan.Instance.theUnit != this.theUnit)
-            CameraPan.Instance.theUnit = this.theUnit;
+		//Set Camera Pan Unit
+		if (CameraPan.Instance.theUnit != null && CameraPan.Instance.theUnit != this.theUnit)
+			CameraPan.Instance.theUnit = this.theUnit;
 
-        bool AllKeysClear = true;
+		bool AllKeysClear = true;
 #if UNITY_EDITOR || UNITY_STANDALONE
-        //Check if Unit is Moving
-        for (short i = 0; i < ListOfMovementKeys.Count; ++i)
-        {
-            if (Input.GetKey(ListOfMovementKeys[i]))
-            {
-                AllKeysClear = false;
+		//Check if Unit is Moving
+		for (short i = 0; i < ListOfMovementKeys.Count; ++i) {
+			if (Input.GetKey (ListOfMovementKeys [i])) {
+				AllKeysClear = false;
 
-                //Move Unit
-                Move(ListOfMovementKeys[i]);
-            }
-            else if (Input.GetKeyUp(ListOfMovementKeys[i]))
-                flipped = isWASD = false;
-        }
-        isMoving = !AllKeysClear;
+				//Move Unit
+				Move (ListOfMovementKeys [i]);
+			} else if (Input.GetKeyUp (ListOfMovementKeys [i]))
+				flipped = isWASD = false;
+		}
+		isMoving = !AllKeysClear;
 #endif
+
+		if (Input.GetKeyUp (KeyCode.P)) {
+			ShpM.isPaused = true;
+		}else if(Input.GetKeyUp (KeyCode.Q)){
+			ShpM.isPaused = false;
+		}
+	
+		if (ShpM.isPaused == true) {
+			Time.timeScale = 0;
+			ShpM.ShopShow();
+		} else if (ShpM.isPaused == false) {
+			Time.timeScale = 1;
+			ShpM.ShopOff();
+
+		}
 
         if (Analog.Instance.Move)
         {

@@ -7,10 +7,10 @@ public class PlayerInfo : Unit
     public override void RandomizeStats()
     {
         Debug.Log("Player Stats Inited.");
-//        Stats.Set(1, Random.Range(500, 700),
-//                     Random.Range(190, 270), Random.Range(150, 220),
-//                     Random.Range(190, 270), Random.Range(150, 220),
-//                     Random.Range(1.1f, 1.75f), "Player", "Slife");
+        Stats.Set(1, Random.Range(500, 700),
+                     Random.Range(190, 270), Random.Range(150, 220),
+                     Random.Range(190, 270), Random.Range(150, 220),
+                     Random.Range(1.1f, 1.75f), "Player", "Slife");
     }
 
     //Singleton Structure
@@ -28,6 +28,9 @@ public class PlayerInfo : Unit
             return mInstance;
         }
     }
+
+	public GUIText Points_Count;
+	public float pt = 0;
 
     //Use this for initialization
     void Start()
@@ -58,15 +61,17 @@ public class PlayerInfo : Unit
     {
         //Update from Parent Class
         this.StaticUpdate();
-
+		
+		Points_Count.text = "" + pt;
     }
 
-	void OnTriggerEnter(Collider col)
-	{
-		if(col.gameObject.tag == "bullet_enemy")
-		{
-			//hp -= 1;	//temp, chg to AI's dmg (if we adding dmg in)
-			Destroy(col.gameObject);
-		}
+	public void AddPts(float pts){
+		pt += pts;
+		
+	}
+	
+	public void MinusPts(float pts){
+		
+		pt -= pts;
 	}
 }

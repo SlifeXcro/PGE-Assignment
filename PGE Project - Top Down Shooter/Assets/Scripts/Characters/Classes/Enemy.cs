@@ -24,6 +24,7 @@ public class Enemy : Unit {
 	EnemyStats enemyStats;
 	Firing firingScript;
 
+
 	private enum FSM_M		// movement FSM
 	{
 		SPAWN,
@@ -373,7 +374,8 @@ public class Enemy : Unit {
 				mState = FSM_M.DEAD;
 				++Global.EnemyKillCount;
 				StopCoroutine("FollowPath");
-				//Destroy(this.gameObject);
+				Player.GetComponent<PlayerInfo>().AddPts(10);
+				 //Destroy(this.gameObject);
 				GetComponentInParent<AIManager>().DestroyEnemy(this);
 			}
 		}
