@@ -9,6 +9,8 @@ public class Tracker : MonoBehaviour {
 
 	Transform goToTrack;
 	SpriteRenderer TrackRenderer;
+	public Sprite altsprite;
+	bool swap = false;
 
 	void Start() {
 		goToTrack = transform.parent;
@@ -18,11 +20,22 @@ public class Tracker : MonoBehaviour {
 	void Update () {
 		Vector3 v3Screen = Camera.main.WorldToViewportPoint(goToTrack.position);
 
-		if (v3Screen.x > -0.01f && v3Screen.x < 1.01f && v3Screen.y > -0.01f && v3Screen.y < 1.01f)
-			TrackRenderer.enabled = true;
+		if (v3Screen.x > -0.01f && v3Screen.x < 1.01f && v3Screen.y > -0.01f && v3Screen.y < 1.01f) {
+			if(!swap){
+				swap = true;
+				Sprite tempSprite = TrackRenderer.sprite;
+				TrackRenderer.sprite = altsprite;
+				altsprite = tempSprite;
+			}
+		}
 		else
 		{
-			TrackRenderer.enabled = true;
+			if(swap){
+				swap = false;
+				Sprite tempSprite = TrackRenderer.sprite;
+				TrackRenderer.sprite = altsprite;
+				altsprite = tempSprite;
+			}
 			v3Screen.x = Mathf.Clamp (v3Screen.x, minX, maxX);
 			v3Screen.y = Mathf.Clamp (v3Screen.y, minY, maxY);
 			transform.position = Camera.main.ViewportToWorldPoint (v3Screen);

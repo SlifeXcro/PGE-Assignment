@@ -24,7 +24,8 @@ public class AIManager : MonoBehaviour {
 	public List<Transform> spawnAreasList = new List<Transform>();
 
 	int waveCount = 0;
-	int spawnEnemiesCount = 3;
+	public int spawnEnemiesCount = 3;
+	int destroyerEnemiesCount = 0;
 
 	// find more efficient way to do these below
 	List<Transform>[] waypointsGroup = new List<Transform>[4];
@@ -84,7 +85,7 @@ public class AIManager : MonoBehaviour {
 			}
 		}
 
-		if(EnemiesList.Count == 0)
+		if(EnemiesList.Count == 0 || destroyerEnemiesCount == 0)
 		{
 			++waveCount;
 
@@ -92,9 +93,9 @@ public class AIManager : MonoBehaviour {
 			int randValue = Random.Range(0, 3);
 			if(waveCount == 1)
 				randValue = 0;
-			print (randValue);
 			SpawnWave(1, Unit.UType.UNIT_E_DESTROYER, (SPAWN_AREA)randValue, 
 			          spawnAreasList[randValue].position, (TARGET_AREA)randValue);
+			++destroyerEnemiesCount;
 			SpawnWave(spawnEnemiesCount, Unit.UType.UNIT_E_SHOOTER, (SPAWN_AREA)randValue, 
 			          spawnAreasList[randValue].position);
 		}
@@ -102,6 +103,8 @@ public class AIManager : MonoBehaviour {
 
 	public void DestroyEnemy(Enemy deadEnemy)
 	{
+		if (deadEnemy.UnitType == Unit.UType.UNIT_E_DESTROYER)
+			--destroyerEnemiesCount;
 		EnemiesList.Remove(deadEnemy);
 		Destroy(deadEnemy.gameObject);
 	}
@@ -128,28 +131,28 @@ public class AIManager : MonoBehaviour {
 				newEnemy = Instantiate( EnemyShooterPrefab, spawnPos, Quaternion.identity ) as Enemy;
 				
 				// assign target
-//				if(EnemiesList.Count > 0)
-//				{
-//					Transform target = null;
-//					foreach(Enemy enemy in EnemiesList)
-//					{
-//						if(enemy.UnitType != Unit.UType.UNIT_E_DESTROYER)
-//							continue;
-//
-//						if(target == null)
-//							target = enemy.transform;
-//						else
-//						{
-//							// if new target's dist < current target dist
-//							if( Vector3.Distance(enemy.transform.position, newEnemy.transform.position) < 
-//						   		Vector3.Distance(target.position, newEnemy.transform.position) )
-//								target = enemy.transform;
-//						}
-//					}
-//
-//					if(target != null)
-//						newEnemy.SetTarget(target);
-//				}
+				if(EnemiesList.Count > 0)
+				{
+					Transform target = null;
+					foreach(Enemy enemy in EnemiesList)
+					{
+						if(enemy.UnitType != Unit.UType.UNIT_E_DESTROYER)
+							continue;
+
+						if(target == null)
+							target = enemy.transform;
+						else
+						{
+							// if new target's dist < current target dist
+							if( Vector3.Distance(enemy.transform.position, newEnemy.transform.position) < 
+						   		Vector3.Distance(target.position, newEnemy.transform.position) )
+								target = enemy.transform;
+						}
+					}
+
+					if(target != null)
+						newEnemy.SetTarget(target);
+				}
 			}
 			
 			newEnemy.transform.parent = this.transform;

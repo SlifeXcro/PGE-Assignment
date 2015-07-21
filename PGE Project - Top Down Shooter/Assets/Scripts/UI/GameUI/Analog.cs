@@ -72,7 +72,7 @@ public class Analog : MonoBehaviour
             if ((!Input.GetMouseButton(0) && !onTouch) || !WithinAnalogRegion)
                 Move = false;
         }
-#elif UNITY_ANDROID
+#elif UNITY_ANDROID || UNITY_IOS
         if (InputScript.InputCollided(this.GetComponent<Collider>()))
             onTouch = Move = true;
         else
