@@ -20,18 +20,18 @@ public class AspectRatio : MonoBehaviour
     }
 
     Vector2 OriginalRes, CurrentRes;
-	public float Scale;
+	public float Scale = 0.0f;
     Vector2 Storage, InitialScale;
     public static bool AspectChanged = false;
 
     //Use this for initialization
     void Awake()
     {
-        OriginalRes.Set(1280.0f, 720.0f);
-
-        InitialScale = this.transform.localScale;
-
-        SetScale();
+//        OriginalRes.Set(1280.0f, 720.0f);
+//
+//        InitialScale = this.transform.localScale;
+//
+//        SetScale();
     }
 
     void SetScale()
@@ -60,10 +60,10 @@ public class AspectRatio : MonoBehaviour
     //Update is called once per frame
     void Update()
     {
-        if (Storage != new Vector2(Screen.width, Screen.height))
-        {
-            AspectChanged = true;
-            SetScale();
-        }
+//        if (Storage != new Vector2(Screen.width, Screen.height))
+//        {
+//            AspectChanged = true;
+//            SetScale();
+//        }
     }
 }

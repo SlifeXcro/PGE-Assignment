@@ -154,8 +154,10 @@ public class AIManager : MonoBehaviour {
 						newEnemy.SetTarget(target);
 				}
 			}
-			
+
+			Vector3 tempLocalScale = newEnemy.transform.localScale;
 			newEnemy.transform.parent = this.transform;
+			newEnemy.transform.localScale = tempLocalScale;
 			newEnemy.waypointList = waypointsGroup[(int)spawnArea];
 			newEnemy.GetComponent<Firing>().Parent = GameObject.FindGameObjectWithTag("BULLET").transform;
 			EnemiesList.Add(newEnemy);

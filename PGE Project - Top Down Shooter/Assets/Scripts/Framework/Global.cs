@@ -33,7 +33,7 @@ public class Global : MonoBehaviour
         if (FreeCam)
             StopMovement = true;
 
-        Debug.Log(ListOfEnemies.Count);
+        //Debug.Log(ListOfEnemies.Count);
 
         //Detect Win
         if (ListOfEnemies.Count == 0 && b_StartChecking)
