@@ -173,10 +173,11 @@ public class Movement : MonoBehaviour
 			ShpM.isPaused = false;
 		}
 	
-		if (ShpM.isPaused == true) {
+		//if (ShpM.isPaused == true) {
+		if(ShpM.OnClicked == true || ShpM.isPaused == true){
 			Time.timeScale = 0;
 			ShpM.ShopShow();
-		} else if (ShpM.isPaused == false) {
+		} else if (ShpM.OnClicked == false || ShpM.isPaused == false) {
 			Time.timeScale = 1;
 			ShpM.ShopOff();
 

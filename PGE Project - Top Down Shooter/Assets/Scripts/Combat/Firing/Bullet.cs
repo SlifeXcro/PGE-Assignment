@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Bullet : MonoBehaviour 
+public class Bullet : Weapon 
 {
-    public float Damage = 10.0f;
+    //public float Damage = 10.0f;
     public Vector3 Dir = Vector3.zero,
                    Vel = new Vector3(10, 10, 0);
 	public ParticleEmitter BulletExplosion;

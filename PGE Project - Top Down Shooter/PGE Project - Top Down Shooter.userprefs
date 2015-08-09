@@ -1,9 +1,8 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Characters\Classes\PlayerInfo.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Shop\ShopMenu.cs">
     <Files>
-      <File FileName="Assets\Scripts\Characters\Classes\Enemy.cs" Line="377" Column="48" />
-      <File FileName="Assets\Scripts\Characters\Classes\PlayerInfo.cs" Line="68" Column="32" />
+      <File FileName="Assets\Scripts\Shop\ShopMenu.cs" Line="47" Column="27" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

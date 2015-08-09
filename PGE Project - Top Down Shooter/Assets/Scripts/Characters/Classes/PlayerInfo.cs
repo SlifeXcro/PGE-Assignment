@@ -32,6 +32,7 @@ public class PlayerInfo : Unit
 
 	public GUIText Points_Count;
     public float pt = 0;
+	public float points = 0;
     public Button_Transition GameOverScene,
                              VictoryScene;
 
@@ -68,6 +69,7 @@ public class PlayerInfo : Unit
         this.StaticUpdate();
 
         Points_Count.text = "" + pt;
+		points = points + pt;
 
         //Game Over Detection
         if (this.Stats.HP <= 0.0f && !b_DoOnce)

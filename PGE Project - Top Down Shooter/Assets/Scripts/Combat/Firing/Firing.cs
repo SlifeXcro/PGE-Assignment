@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Firing : MonoBehaviour 
+public class Firing : Weapon 
 {
 	public static bool FIRE_BUTTON = false,
 	isFiring = false;
@@ -29,7 +29,8 @@ public class Firing : MonoBehaviour
     public Vector3 BulletDir;
 	public string bulletTag_player = "bullet_player";
 	public string bulletTag_enemy = "bullet_enemy";
-	
+	Weapon wp;
+	WPNtype type;
 	//Timer
 	Timer.TimeBundle FireTimer;
 
@@ -37,8 +38,9 @@ public class Firing : MonoBehaviour
 	void Start () 
     {
 		mInstance = this;
-		
-		FireTimer.Time = 0.1f;
+
+		type = WPNtype.PISTOL;
+			FireTimer.Time = 0.1f;
 		FireTimer.TimeIndex = Timer.GetExecuteID(FireTimer.Time);
 		
 		if (FireButton == null)
@@ -48,6 +50,8 @@ public class Firing : MonoBehaviour
 	//Update is called once per frame
 	void Update ()
 	{
+			
+
 		if (tag != "Player")
 			return;
 
