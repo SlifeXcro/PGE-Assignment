@@ -13,10 +13,10 @@ public class Grid : MonoBehaviour {
 	int gridSizeX, gridSizeY;			// no. of rows/columns 
 
 	void Awake() {
-		nodeRadius *= AspectRatio.Instance.Scale;					// adjust according to aspect ratio
+		//nodeRadius *= AspectRatio.Instance.Scale;					// adjust according to aspect ratio
 		nodeDiameter = nodeRadius*2; 
-		gridWorldSize.x *= AspectRatio.Instance.Scale;				// adjust according to aspect ratio
-		gridWorldSize.y *= AspectRatio.Instance.Scale;				// adjust according to aspect ratio
+		//gridWorldSize.x *= AspectRatio.Instance.Scale;				// adjust according to aspect ratio
+		//gridWorldSize.y *= AspectRatio.Instance.Scale;				// adjust according to aspect ratio
 		gridSizeX = Mathf.RoundToInt(gridWorldSize.x/nodeDiameter);
 		gridSizeY = Mathf.RoundToInt(gridWorldSize.y/nodeDiameter);
 		CreateGrid();

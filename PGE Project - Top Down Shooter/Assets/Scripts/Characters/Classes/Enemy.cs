@@ -7,6 +7,7 @@ public class Enemy : Unit {
 	public float hp;	
 
 	bool followingPath;
+	bool findNewTarget;
 	int nextWaypt;							// stores next waypoint location
 	int targetIndex;
 	float delay;							// idle delay
@@ -19,7 +20,7 @@ public class Enemy : Unit {
 	
 	public List<Transform> waypointList = new List<Transform>();
 	
-	Transform Target;
+	public Transform Target;
 	Transform Player;	
 	EnemyStats enemyStats;
 	Firing firingScript;
@@ -63,6 +64,7 @@ public class Enemy : Unit {
 		nextWaypt = 0;	
 		targetIndex = 0;
 		followingPath = false;
+		findNewTarget = false;
 		if(Target != null)
 		{
 			targetCurrentPos = Target.position;
@@ -98,7 +100,7 @@ public class Enemy : Unit {
 
 		HitBoxUpdate();
 
-		if(mState != FSM_M.COMBAT)
+		if(mState != FSM_M.COMBAT || mState != FSM_M.CHASE)
 		{
 			if(Target != null)
 			{
@@ -149,7 +151,8 @@ public class Enemy : Unit {
 					if(this.theModel.CollisionRegion.inRng_Chase)		// if Player in sight		
 					{
 						if(this.UnitType != UType.UNIT_E_DESTROYER)
-						Target = Player;
+						//Target = Player;
+						Target = null;
 						mState = FSM_M.CHASE;			 
 					}
 				}
@@ -168,7 +171,8 @@ public class Enemy : Unit {
 				{
 					if(this.theModel.CollisionRegion.inRng_Chase)	// if Player in sight		
 					{	
-						Target = Player;
+						//Target = Player;
+						Target = null;
 						mState = FSM_M.CHASE;	
 					}
 				}
@@ -188,8 +192,10 @@ public class Enemy : Unit {
 				if(Target == waypointList[nextWaypt])				// if target is waypt
 				{
 					// if AI reaches targeted waypt
-					if((Target.position-transform.position).sqrMagnitude < enemyStats.tolLength*1.2f)
+					if(findNewTarget 
+				   || (Target.position-transform.position).sqrMagnitude < enemyStats.tolLength*1.2f)
 					{
+						findNewTarget = false;
 						++nextWaypt;								// move to next waypt
 						if(nextWaypt > waypointList.Count-1)		
 						{
@@ -219,7 +225,10 @@ public class Enemy : Unit {
 						delay = 0;
 						strafeTargetPos	= this.transform.position;
 						mState = FSM_M.COMBAT;	
-					}						
+					}	
+
+					transform.position = Vector3.MoveTowards(transform.position, Player.transform.position,
+					                                         enemyStats.alertMoveSpeed*Time.deltaTime);
 				}
 				break;
 
@@ -302,7 +311,8 @@ public class Enemy : Unit {
 				{			 
 					mState = FSM_M.IDLE;	// rest a while
 					cState = FSM_C.NULL;
-					Target = null;
+					//Target = null;
+					findNewTarget = true;
 				}
 
 				delay -= Time.deltaTime;

@@ -34,7 +34,7 @@ public class AIManager : MonoBehaviour {
 	List<Transform> leftWaypointsList = new List<Transform>();
 	List<Transform> rightWaypointsList = new List<Transform>();
 	// areas for player to protect, enemy destroyers to attack
-	List<Transform> protectAreasList = new List<Transform>();	
+	//public List<Transform> protectAreasList = new List<Transform>();	
 
 	List<DoorAnim> doorsList = new List<DoorAnim>();	
 	List<Enemy> EnemiesList = new List<Enemy>();
@@ -67,9 +67,9 @@ public class AIManager : MonoBehaviour {
 		waypointsGroup[2] = leftWaypointsList;
 		waypointsGroup[3] = rightWaypointsList;
 
-		Transform protectAreas = GameObject.FindGameObjectWithTag("protectAreas").transform;
-		foreach(Transform child in protectAreas)
-			protectAreasList.Add(child);
+//		Transform protectAreas = GameObject.FindGameObjectWithTag("protectAreas").transform;
+//		foreach(Transform child in protectAreas)
+//			protectAreasList.Add(child);
 
 		SpawnTimer.Time = 2.0f;
 		SpawnTimer.TimeIndex = Timer.GetExecuteID(SpawnTimer.Time);
@@ -124,35 +124,35 @@ public class AIManager : MonoBehaviour {
 			if(type == Unit.UType.UNIT_E_DESTROYER)
 			{
 			   newEnemy = Instantiate( EnemyDestroyerPrefab, spawnPos, Quaternion.identity ) as Enemy;
-			   newEnemy.SetTarget(protectAreasList[(int)targetArea]);
+			   //newEnemy.SetTarget(protectAreasList[(int)targetArea]);
 			}
 			else
 			{
 				newEnemy = Instantiate( EnemyShooterPrefab, spawnPos, Quaternion.identity ) as Enemy;
-				
+
 				// assign target
-				if(EnemiesList.Count > 0)
-				{
-					Transform target = null;
-					foreach(Enemy enemy in EnemiesList)
-					{
-						if(enemy.UnitType != Unit.UType.UNIT_E_DESTROYER)
-							continue;
-
-						if(target == null)
-							target = enemy.transform;
-						else
-						{
-							// if new target's dist < current target dist
-							if( Vector3.Distance(enemy.transform.position, newEnemy.transform.position) < 
-						   		Vector3.Distance(target.position, newEnemy.transform.position) )
-								target = enemy.transform;
-						}
-					}
-
-					if(target != null)
-						newEnemy.SetTarget(target);
-				}
+//				if(EnemiesList.Count > 0)
+//				{
+//					Transform target = null;
+//					foreach(Enemy enemy in EnemiesList)
+//					{
+//						if(enemy.UnitType != Unit.UType.UNIT_E_DESTROYER)
+//							continue;
+//
+//						if(target == null)
+//							target = enemy.transform;
+//						else
+//						{
+//							// if new target's dist < current target dist
+//							if( Vector3.Distance(enemy.transform.position, newEnemy.transform.position) < 
+//						   		Vector3.Distance(target.position, newEnemy.transform.position) )
+//								target = enemy.transform;
+//						}
+//					}
+//
+//					if(target != null)
+//						newEnemy.SetTarget(target);
+//				}
 			}
 
 			Vector3 tempLocalScale = newEnemy.transform.localScale;
