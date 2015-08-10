@@ -64,7 +64,7 @@ public class PlayerInfo : Unit
 
     //Update is called once per frame
     void Update()
-    {
+	{
         //Update from Parent Class
         this.StaticUpdate();
 
